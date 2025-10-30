@@ -6,19 +6,27 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PengajuanSurat;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class PengajuanSuratController extends Controller
 {
-    public function index()
+    public function index(Request $request): View
     {
-        $pengajuan = PengajuanSurat::with(['user', 'suratJenis'])
-            ->latest()
-            ->get();
+        $query = PengajuanSurat::with(['user', 'suratJenis'])->latest();
 
-        return view('admin.pengajuan.index', compact('pengajuan'));
+        // Filter by status
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        $pengajuan = $query->get();
+        $totalPengajuan = $pengajuan->count();
+
+        return view('admin.pengajuan.index', compact('pengajuan', 'totalPengajuan'));
     }
 
-    public function show($id)
+    public function show($id): View
     {
         $pengajuan = PengajuanSurat::with(['user', 'suratJenis'])
             ->findOrFail($id);
@@ -26,11 +34,11 @@ class PengajuanSuratController extends Controller
         return view('admin.pengajuan.show', compact('pengajuan'));
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'status' => 'required|in:idle,proses,selesai',
-            'keterangan_admin' => 'nullable|string',
+            'keterangan_admin' => 'nullable|string|max:500',
         ]);
 
         $pengajuan = PengajuanSurat::findOrFail($id);
@@ -39,7 +47,13 @@ class PengajuanSuratController extends Controller
             'keterangan_admin' => $request->keterangan_admin,
         ]);
 
+        $statusLabels = [
+            'idle' => 'Menunggu',
+            'proses' => 'Sedang Diproses',
+            'selesai' => 'Selesai'
+        ];
+
         return redirect()->route('admin.pengajuan.show', $id)
-            ->with('success', 'Status pengajuan berhasil diperbarui!');
+            ->with('success', "Status pengajuan berhasil diubah menjadi: {$statusLabels[$request->status]}");
     }
 }

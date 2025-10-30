@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -128,7 +130,7 @@
 
     <!-- Footer -->
     <footer class="main-footer">
-        <strong>Copyright &copy; 2024 <a href="#">Sistem Surat Desa Harapan Jaya</a>.</strong>
+        <strong>Copyright &copy; 2025 <a href="#">Sistem Surat Desa Gedung Harapan</a>.</strong>
         All rights reserved.
     </footer>
 </div>
