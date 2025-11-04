@@ -1,0 +1,63 @@
+# Version control
+.git
+.gitignore
+.github/
+
+# Environment files (except example)
+.env
+.env.local
+.env.testing
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.override.yml
+
+# Laravel specific
+storage/*.key
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
+bootstrap/cache/config.php
+
+# Node dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Development tools
+.idea/
+.vscode/
+.phpunit.result.cache
+.coverage
+.cache
+.sass-cache
+
+# Logs
+*.log
+storage/logs/*.log
+
+# Cache files
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
+
+# Tests
+.phpunit.cache
+/tests/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE.md
+
+# Backup files
+*.backup
+*.sql
+*.tar
+*.gz
