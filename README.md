@@ -1,59 +1,244 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏢 Layanan Administratif Desa - Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sebuah aplikasi web modern berbasis Laravel untuk mengelola layanan administratif desa seperti pembuatan surat keterangan, surat pengantar, dan surat izin.
 
-## About Laravel
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🎨 **Dashboard Admin** - Management layanan dan surat
+- 👥 **Authentication System** - Login untuk admin dan warga
+- 📝 **Pengajuan Surat Online** - Warga bisa mengajukan surat secara online
+- 📊 **Tracking Status** - Melacak status pengajuan surat
+- 📱 **Responsive Design** - Tampilan optimal di semua perangkat
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Teknologi Stack
 
-## Learning Laravel
+- **Laravel 10/11** - PHP Framework
+- **MySQL** - Database
+- **Bootstrap 5** - Frontend Framework
+- **JavaScript** - Interaktivitas
+- **Composer** - Dependency Management
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Instalasi dan Setup
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
+- PHP 8.1 atau lebih tinggi
+- Composer
+- MySQL
+- Node.js & NPM
 
-## Laravel Sponsors
+### 📥 Clone dan Install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Clone repository
+git clone https://github.com/username/layanan-desa-laravel.git
 
-### Premium Partners
+# Masuk ke direktori project
+cd layanan-desa-laravel
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Install dependencies PHP
+composer install
 
-## Contributing
+# Install dependencies JavaScript
+npm install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Build assets
+npm run build
 
-## Code of Conduct
+# Copy environment file
+cp .env.example .env
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Generate application key
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+### 🗄️ Setup Database
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# Buat database MySQL
+mysql -u root -p
+CREATE DATABASE layanan_desa;
 
-## License
+# Konfigurasi .env file
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=layanan_desa
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 🔧 Migration dan Seeding
+
+```bash
+# Jalankan migration
+php artisan migrate
+
+# Jalankan seeder (data dummy)
+php artisan db:seed
+
+# atau jalankan migrasi + seeding sekaligus
+php artisan migrate --seed
+```
+
+### 👤 Setup User Default
+
+```bash
+# Buat user admin
+php artisan make:filament-user
+
+# atau melalui tinker
+php artisan tinker
+>>> User::create([
+    'name' => 'Admin',
+    'email' => 'admin@desa.id',
+    'password' => Hash::make('password123')
+]);
+```
+
+### 🎯 Menjalankan Aplikasi
+
+```bash
+# Jalankan development server
+php artisan serve
+
+# Jalankan queue worker (jika menggunakan queue)
+php artisan queue:work
+
+# Jalankan scheduler (untuk task otomatis)
+php artisan schedule:work
+```
+
+Akses aplikasi di: `http://localhost:8000`
+
+## 📁 Struktur Project
+
+```
+layanan-desa-laravel/
+├── app/
+│   ├── Models/
+│   │   ├── User.php
+│   │   ├── SuratKeterangan.php
+│   │   ├── SuratPengantar.php
+│   │   └── SuratIzin.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   └── Requests/
+│   └── Providers/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── resources/
+│   ├── views/
+│   └── assets/
+├── routes/
+│   ├── web.php
+│   └── api.php
+├── config/
+└── public/
+```
+
+## 👥 Default Login
+
+**Admin:**
+- Email: admin@desa.id
+- Password: password123
+
+**Warga:**
+- Email: warga@desa.id  
+- Password: password123
+
+## 🗃️ Fitur Database
+
+### Tabel Utama:
+- `users` - Data pengguna (admin & warga)
+- `surat_keterangan` - Data pengajuan surat keterangan
+- `surat_pengantar` - Data pengajuan surat pengantar
+- `surat_izin` - Data pengajuan surat izin
+- `layanan` - Data master layanan
+- `status_pengajuan` - Tracking status
+
+## 🔧 Development
+
+```bash
+# Clear cache
+php artisan optimize:clear
+
+# Generate ide helper
+php artisan ide-helper:generate
+
+# Run tests
+php artisan test
+
+# Check routes
+php artisan route:list
+```
+
+## 🌐 Production Deployment
+
+```bash
+# Optimize for production
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Run migration in production
+php artisan migrate --force
+```
+
+## 🤝 Kontribusi
+
+1. Fork project
+2. Create feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push branch (`git push origin feature/NewFeature`)
+5. Open Pull Request
+
+## 📝 Todo List
+
+- [ ] Integrasi payment gateway
+- [ ] API untuk mobile app
+- [ ] Export laporan PDF/Excel
+- [ ] Sistem notifikasi email/SMS
+- [ ] Integrasi dengan sistem eksternal
+
+## 🐛 Troubleshooting
+
+**Common Issues:**
+
+```bash
+# Permission error
+chmod -R 775 storage bootstrap/cache
+
+# Composer error
+composer dump-autoload
+
+# Node modules error
+rm -rf node_modules package-lock.json
+npm install
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+Jika mengalami masalah:
+1. Check [Issues](../../issues)
+2. Buat issue baru dengan detail error
+3. Contact: dev@desa.id
+
+---
+
+<div align="center">
+
+### 🚀 Built with Laravel & ❤️
+
+**Jangan lupa untuk ⭐ repository ini!**
+
+</div>
