@@ -16,7 +16,32 @@ ERROR: process "/bin/bash -ol pipefail -c npm ci" did not complete successfully:
 
 ### Solusi yang Diterapkan:
 
-#### 1. Ganti `npm ci` dengan `npm install`
+### 🚨 IMPORTANT: Check .dockerignore First!
+
+**BEFORE** modifying Dockerfile, check if `.dockerignore` is blocking `package-lock.json`:
+
+```bash
+# Check .dockerignore content
+cat .dockerignore | grep package-lock.json
+
+# If found, REMOVE THIS LINE:
+# package-lock.json  <-- DELETE THIS!
+```
+
+**Why?** Even if you have `package-lock.json` locally, if `.dockerignore` blocks it, the file won't be copied to Docker image!
+
+## 🔧 Solusi yang Diterapkan
+
+### 0. **Fix .dockerignore** (CRITICAL!)
+```bash
+# Edit .dockerignore and remove:
+package-lock.json
+
+# Or comment it out:
+# package-lock.json is needed for npm ci
+```
+
+### 1. Ganti npm ci dengan npm install
 
 **Sebelum:**
 ```dockerfile
