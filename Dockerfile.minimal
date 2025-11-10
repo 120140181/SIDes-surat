@@ -28,7 +28,10 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignor
 COPY package*.json ./
 
 # Install Node deps (include devDependencies for Vite build)
-RUN npm cache clean --force && npm install --legacy-peer-deps
+# Remove package-lock.json to fix npm optional dependencies bug
+RUN rm -f package-lock.json && \
+    npm cache clean --force && \
+    npm install --legacy-peer-deps
 
 # Copy Apache config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
@@ -36,8 +39,7 @@ COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 # Copy app files
 COPY . .
 
-# Rebuild native modules for Linux
-RUN npm rebuild
+# No need for rebuild - fresh install without lock file
 
 # Complete composer
 RUN composer dump-autoload --optimize --no-dev
