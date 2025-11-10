@@ -36,6 +36,9 @@
     },
     "scripts": {
         "post-install-cmd": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-install-production": [
             "php artisan cache:clear",
             "php artisan config:clear"
         ],

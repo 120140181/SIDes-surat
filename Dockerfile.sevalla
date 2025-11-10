@@ -4,7 +4,7 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies and Node.js in one layer
+# Install system dependencies in one layer
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -39,39 +39,40 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Enable Apache mod_rewrite
+# Enable Apache modules
 RUN a2enmod rewrite headers
 
-# Copy composer files first for better caching
+# Copy composer.json and composer.lock first (for better Docker caching)
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies without running scripts
+# Install PHP dependencies
 RUN composer install \
     --no-dev \
     --no-scripts \
     --no-autoloader \
     --prefer-dist \
-    --no-interaction
+    --no-interaction \
+    --ignore-platform-reqs
 
-# Copy package files
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install NPM dependencies
+# Install Node dependencies
 RUN npm ci --only=production || npm install --only=production
 
-# Copy Apache virtual host config
+# Copy Apache config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Copy rest of application files
+# Copy application code
 COPY . .
 
-# Complete composer installation with autoloader
+# Complete Composer installation
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-# Build frontend assets
+# Build assets
 RUN npm run build
 
-# Clean up node_modules to reduce image size
+# Clean up
 RUN rm -rf node_modules
 
 # Set proper permissions
@@ -83,27 +84,12 @@ RUN chown -R www-data:www-data /var/www/html \
 # Create .env from example if not exists
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Expose port 80
+# Expose port
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
 
-# Build frontend assets
-RUN npm run build
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
-    && chmod -R 775 storage \
-    && chmod -R 775 bootstrap/cache
-
-# Create .env if not exists and generate key
-RUN if [ ! -f .env ]; then \
-        cp .env.example .env && \
-        php artisan key:generate; \
-    fi
-
-# Expose port 80
-EXPOSE 80
-
+# Start Apache
 CMD ["apache2-foreground"]
