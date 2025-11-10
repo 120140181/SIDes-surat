@@ -1,0 +1,89 @@
+{
+  "name": "SIDes-Surat Deployment",
+  "description": "Complete deployment files for Render.com",
+  "files": [
+    {
+      "name": "render.yaml",
+      "purpose": "Blueprint configuration for automatic deployment",
+      "usage": "Render will automatically detect this file and create database + web service"
+    },
+    {
+      "name": "Dockerfile.render",
+      "purpose": "Docker configuration optimized for Render.com",
+      "usage": "Used to build the Docker image for the web service"
+    },
+    {
+      "name": "docker/entrypoint.sh",
+      "purpose": "Startup script for the container",
+      "usage": "Runs migrations, caches, and other setup tasks on deployment"
+    },
+    {
+      "name": ".dockerignore",
+      "purpose": "Exclude files from Docker build",
+      "usage": "Reduces image size and build time"
+    },
+    {
+      "name": "build.sh",
+      "purpose": "Build script for Render",
+      "usage": "Optional: Custom build commands if needed"
+    },
+    {
+      "name": "DEPLOY_RENDER.md",
+      "purpose": "Complete deployment documentation",
+      "usage": "Read this for detailed deployment instructions and troubleshooting"
+    },
+    {
+      "name": "QUICK_DEPLOY.md",
+      "purpose": "Quick deployment guide",
+      "usage": "Fast track deployment in 5 steps"
+    },
+    {
+      "name": "DEPLOYMENT_CHECKLIST.md",
+      "purpose": "Deployment checklist",
+      "usage": "Check off items before, during, and after deployment"
+    }
+  ],
+  "deployment_steps": [
+    "Push code to GitHub/GitLab",
+    "Login to render.com",
+    "Create new Blueprint",
+    "Connect repository",
+    "Apply Blueprint",
+    "Wait for deployment (5-10 minutes)",
+    "Set APP_URL in environment",
+    "Test the application"
+  ],
+  "environment_variables": {
+    "required": [
+      "APP_KEY",
+      "APP_URL",
+      "DB_HOST",
+      "DB_PORT",
+      "DB_DATABASE",
+      "DB_USERNAME",
+      "DB_PASSWORD"
+    ],
+    "optional": [
+      "MAIL_MAILER",
+      "MAIL_HOST",
+      "MAIL_PORT",
+      "MAIL_USERNAME",
+      "MAIL_PASSWORD"
+    ]
+  },
+  "estimated_time": {
+    "first_deployment": "15-20 minutes",
+    "subsequent_deployments": "5-8 minutes"
+  },
+  "costs": {
+    "free_tier": {
+      "compute": "750 hours/month",
+      "database": "MySQL 1GB",
+      "limitations": "Sleeps after 15 min inactivity"
+    },
+    "starter_tier": {
+      "cost": "$7/month",
+      "benefits": "No sleep, better performance"
+    }
+  }
+}

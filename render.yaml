@@ -1,0 +1,69 @@
+services:
+  # Database MySQL - Dibuat dulu
+  - type: pserv
+    name: sides-surat-db
+    runtime: mysql
+    plan: free
+    region: singapore
+    ipAllowList: []
+    databaseName: sides_surat
+    databaseUser: sides_user
+
+  # Web Service
+  - type: web
+    name: sides-surat
+    runtime: docker
+    dockerfilePath: ./Dockerfile.render
+    plan: free
+    region: singapore
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: APP_NAME
+        value: SIDes-Surat
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        generateValue: true
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: sides-surat-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: sides-surat-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: sides-surat-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: sides-surat-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: sides-surat-db
+          property: password
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: MAIL_MAILER
+        value: log
