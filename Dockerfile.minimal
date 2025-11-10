@@ -26,8 +26,8 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignor
 # Copy package files
 COPY package*.json ./
 
-# Install Node deps (use npm install instead of ci for better compatibility)
-RUN npm install --production --no-optional --legacy-peer-deps
+# Install Node deps (include devDependencies for Vite build)
+RUN npm install --legacy-peer-deps
 
 # Copy Apache config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf

@@ -57,8 +57,8 @@ RUN composer install \
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install Node dependencies (use npm install for better compatibility)
-RUN npm install --production --no-optional --legacy-peer-deps
+# Install Node dependencies (include devDependencies for Vite build)
+RUN npm install --legacy-peer-deps
 
 # Copy Apache config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
