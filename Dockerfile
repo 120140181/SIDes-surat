@@ -87,23 +87,3 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 EXPOSE 80
 
 CMD ["apache2-foreground"]
-
-# Build frontend assets
-RUN npm run build
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
-    && chmod -R 775 storage \
-    && chmod -R 775 bootstrap/cache
-
-# Create .env if not exists and generate key
-RUN if [ ! -f .env ]; then \
-        cp .env.example .env && \
-        php artisan key:generate; \
-    fi
-
-# Expose port 80
-EXPOSE 80
-
-CMD ["apache2-foreground"]

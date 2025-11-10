@@ -1,0 +1,52 @@
+# Dockerfile MINIMAL untuk debugging Sevalla
+FROM php:8.2-apache
+
+WORKDIR /var/www/html
+
+# Install minimal dependencies
+RUN apt-get update && apt-get install -y \
+    git curl zip unzip \
+    libpng-dev libzip-dev libonig-dev \
+    nodejs npm \
+    && docker-php-ext-install pdo pdo_mysql mbstring gd zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
+# Copy composer files
+COPY composer.json composer.lock ./
+
+# Install PHP deps (ignore platform reqs untuk avoid error)
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node deps
+RUN npm ci --only=production || npm install --only=production
+
+# Copy Apache config
+COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy app files
+COPY . .
+
+# Complete composer
+RUN composer dump-autoload --optimize --no-dev
+
+# Build assets
+RUN npm run build
+
+# Permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Create .env
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
+
+EXPOSE 80
+CMD ["apache2-foreground"]
