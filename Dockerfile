@@ -56,8 +56,8 @@ RUN composer install \
 # Copy package files
 COPY package*.json ./
 
-# Install NPM dependencies
-RUN npm ci --only=production || npm install --only=production
+# Install NPM dependencies with fallback
+RUN npm install --production --no-optional || npm install --production --legacy-peer-deps
 
 # Copy Apache virtual host config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
