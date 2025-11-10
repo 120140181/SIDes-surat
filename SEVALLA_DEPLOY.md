@@ -90,6 +90,154 @@ git push origin main
 
 Klik "Deploy" dan tunggu proses build selesai.
 
+## Auto-Deploy dan Update Aplikasi
+
+### ✅ Auto-Deploy (REKOMENDASI)
+
+Sevalla **SUPPORT auto-deploy** dari GitHub/GitLab! Cara mengaktifkan:
+
+#### Setup Auto-Deploy:
+
+1. **Di Sevalla Dashboard:**
+   - Masuk ke Application Settings
+   - Cari bagian **"Deployment"** atau **"Git Integration"**
+   - Enable **"Auto Deploy"** atau **"Automatic Deployments"**
+   - Pilih branch: `main` (atau branch yang Anda gunakan)
+
+2. **Setelah Diaktifkan:**
+   - Setiap kali Anda `git push origin main`
+   - Sevalla akan **otomatis detect perubahan**
+   - Build dan deploy ulang **secara otomatis**
+   - Tidak perlu destroy & create ulang!
+
+#### Workflow dengan Auto-Deploy:
+
+```bash
+# 1. Edit code di local
+# 2. Commit & push
+git add .
+git commit -m "Update feature X"
+git push origin main
+
+# 3. Sevalla otomatis:
+# - Detect push baru
+# - Pull latest code
+# - Build Docker image
+# - Deploy container baru
+# - Switch traffic ke container baru
+# - Done! (5-10 menit)
+
+# 4. Check status di Sevalla Dashboard
+```
+
+### 🔄 Manual Deploy
+
+Jika auto-deploy belum aktif atau ingin deploy manual:
+
+#### Opsi 1: Redeploy dari Dashboard
+
+1. Login ke Sevalla Dashboard
+2. Pilih application Anda
+3. Klik **"Redeploy"** atau **"Deploy"** button
+4. Tunggu build selesai
+5. ✅ Done!
+
+**TIDAK PERLU destroy & create ulang!**
+
+#### Opsi 2: Deploy dengan Webhook
+
+Jika Sevalla provide webhook URL:
+
+1. Copy webhook URL dari Sevalla Dashboard
+2. Add ke GitHub repository:
+   - Settings → Webhooks → Add webhook
+   - Paste URL
+   - Events: Push events
+   - Save
+3. Setiap push akan trigger deploy
+
+#### Opsi 3: Via CLI (jika tersedia)
+
+```bash
+# Install Sevalla CLI (jika ada)
+sevalla login
+
+# Deploy manual
+sevalla deploy --app sides-surat
+```
+
+### ❌ Yang TIDAK PERLU Dilakukan:
+
+- ❌ **Jangan destroy & create ulang** - ini akan hapus database dan settings!
+- ❌ **Jangan delete application** - cukup redeploy
+- ❌ **Jangan create new app** untuk setiap update
+
+### 🎯 Best Practice Update:
+
+1. **Development:**
+   ```bash
+   # Test di local dulu
+   composer install
+   npm run build
+   php artisan serve
+   ```
+
+2. **Commit & Push:**
+   ```bash
+   git add .
+   git commit -m "Descriptive message"
+   git push origin main
+   ```
+
+3. **Monitor Deploy:**
+   - Buka Sevalla Dashboard
+   - Lihat Deployment Logs
+   - Tunggu status "Running" atau "Active"
+   - Test aplikasi
+
+4. **Rollback (jika ada error):**
+   - Di Sevalla Dashboard
+   - Cari "Deployments" atau "History"
+   - Pilih deployment sebelumnya yang sukses
+   - Klik "Rollback" atau "Redeploy"
+
+### 📊 Deploy Timeline:
+
+| Action | Time | Auto-Deploy |
+|--------|------|-------------|
+| git push | 1s | ✅ Triggers |
+| Detect push | 5-30s | ✅ Auto |
+| Build image | 5-10 min | ✅ Auto |
+| Deploy | 1-2 min | ✅ Auto |
+| **Total** | **~10 min** | ✅ Zero touch |
+
+### 🔔 Notifications:
+
+Setup notifikasi agar tahu kapan deploy selesai:
+- Email notification
+- Slack/Discord webhook
+- Check Sevalla settings untuk integration
+
+### 🐛 Jika Auto-Deploy Tidak Berfungsi:
+
+1. **Check Connection:**
+   - Sevalla → Settings → Git Integration
+   - Ensure GitHub/GitLab connected
+   - Check permissions
+
+2. **Check Webhook:**
+   - GitHub → Settings → Webhooks
+   - Look for Sevalla webhook
+   - Check recent deliveries for errors
+
+3. **Manual Trigger:**
+   - Sevalla Dashboard → Redeploy button
+   - Force rebuild
+
+4. **Contact Support:**
+   - Sevalla support team
+   - Provide error logs
+
 ## Debugging Tips
 
 ### Jika Build Masih Gagal:
@@ -208,9 +356,49 @@ Jika Sevalla tidak work:
 
 ---
 
+## 📝 Summary: Update Workflow
+
+### Dengan Auto-Deploy (Mudah!):
+```bash
+# Local changes
+git add .
+git commit -m "Update"
+git push origin main
+
+# Sevalla auto-deploy ✅
+# Wait ~10 minutes
+# Done! 🎉
+```
+
+### Manual Deploy (Jika diperlukan):
+1. Push ke GitHub: `git push origin main`
+2. Sevalla Dashboard → **Redeploy button**
+3. Wait ~10 minutes
+4. Done! 🎉
+
+### ⚠️ PENTING:
+- ✅ **Redeploy** untuk update (keep database & settings)
+- ❌ **JANGAN destroy** untuk update (akan hapus semua!)
+
+---
+
 **Pro Tip:** Selalu test Docker build locally dulu sebelum push!
 
 ```bash
 docker build -t test-app .
 docker run -p 8080:80 test-app
 ```
+
+## 🎓 Learning Resources
+
+- Sevalla Documentation: https://sevalla.com/docs
+- Docker Best Practices: https://docs.docker.com/develop/dev-best-practices/
+- Laravel Deployment: https://laravel.com/docs/deployment
+
+## 🆘 Need Help?
+
+1. Check Sevalla Dashboard Logs
+2. Read error messages carefully
+3. Search Sevalla documentation
+4. Contact Sevalla support
+5. Ask in Laravel community
