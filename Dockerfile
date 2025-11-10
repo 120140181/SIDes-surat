@@ -57,13 +57,17 @@ RUN composer install \
 COPY package*.json ./
 
 # Install NPM dependencies INCLUDING devDependencies (needed for Vite build)
-RUN npm install --legacy-peer-deps
+# Clean cache first to avoid platform mismatch issues
+RUN npm cache clean --force && npm install --legacy-peer-deps
 
 # Copy Apache virtual host config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Copy rest of application files
 COPY . .
+
+# Rebuild native modules for Linux platform
+RUN npm rebuild
 
 # Complete composer installation with autoloader
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative

@@ -27,13 +27,16 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignor
 COPY package*.json ./
 
 # Install Node deps (include devDependencies for Vite build)
-RUN npm install --legacy-peer-deps
+RUN npm cache clean --force && npm install --legacy-peer-deps
 
 # Copy Apache config
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Copy app files
 COPY . .
+
+# Rebuild native modules for Linux
+RUN npm rebuild
 
 # Complete composer
 RUN composer dump-autoload --optimize --no-dev
