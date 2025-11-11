@@ -42,6 +42,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable Apache modules
 RUN a2enmod rewrite headers
 
+# Configure Apache to listen on port 8080
+RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
+
 # Copy composer.json and composer.lock first (for better Docker caching)
 COPY composer.json composer.lock ./
 
@@ -89,8 +92,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # Create .env from example if not exists
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Expose port
-EXPOSE 80
+# Expose port 8080 (Sevalla requirement)
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \

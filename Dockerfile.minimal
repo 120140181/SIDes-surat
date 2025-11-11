@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Enable Apache modules
-RUN a2enmod rewrite headers
+RUN a2enmod rewrite headers && \
+    sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 
 # Copy composer files
 COPY composer.json composer.lock ./
@@ -54,5 +55,5 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 # Create .env
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-EXPOSE 80
+EXPOSE 8080
 CMD ["apache2-foreground"]

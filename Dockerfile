@@ -42,6 +42,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite headers
 
+# Configure Apache to listen on port 8080 (Sevalla requirement)
+RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf && \
+    sed -i 's/:80/:8080/g' /etc/apache2/sites-available/000-default.conf
+
 # Copy composer files first for better caching
 COPY composer.json composer.lock ./
 
@@ -88,7 +92,7 @@ RUN chown -R www-data:www-data /var/www/html \
 # Create .env from example if not exists
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Expose port 80
-EXPOSE 80
+# Expose port 8080 (Sevalla requirement)
+EXPOSE 8080
 
 CMD ["apache2-foreground"]
