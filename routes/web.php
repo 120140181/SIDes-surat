@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 
 // ==================== PUBLIC ROUTES ====================
 Route::get('/', function () {
+    return response()->json(['status' => 'OK', 'message' => 'Laravel is running']);
+});
+
+Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
