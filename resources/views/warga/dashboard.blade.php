@@ -13,11 +13,19 @@
 @section('content')
 {{-- Alert jika profile belum lengkap --}}
 @if(!Auth::user()->isProfileComplete())
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <i class="fas fa-exclamation-triangle"></i>
-    <strong>Profile belum lengkap!</strong>
-    <a href="{{ route('warga.profile.edit') }}" class="alert-link">Lengkapi data profile Anda</a>
-    untuk mempermudah proses pengajuan surat.
+<div class="alert alert-warning alert-dismissible fade show shadow-sm border-0" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-exclamation-triangle fa-2x mr-3"></i>
+        <div>
+            <strong>Profile belum lengkap!</strong><br>
+            <small>
+                <a href="{{ route('warga.profile.edit') }}" class="alert-link">
+                    <i class="fas fa-user-edit"></i> Lengkapi data profile Anda
+                </a>
+                untuk mempermudah proses pengajuan surat.
+            </small>
+        </div>
+    </div>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -25,9 +33,9 @@
 @endif
 
 <div class="row">
-    <!-- Statistik Card -->
+    <!-- Statistik Card dengan Gradient -->
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
+        <div class="small-box bg-gradient-info shadow-sm hover-scale">
             <div class="inner">
                 <h3>{{ $totalPengajuan }}</h3>
                 <p>Total Pengajuan</p>
@@ -42,7 +50,7 @@
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-success">
+        <div class="small-box bg-gradient-success shadow-sm hover-scale">
             <div class="inner">
                 <h3>{{ $pengajuanSelesai }}</h3>
                 <p>Surat Selesai</p>
@@ -57,7 +65,7 @@
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-warning">
+        <div class="small-box bg-gradient-warning shadow-sm hover-scale">
             <div class="inner">
                 <h3>{{ $pengajuanProses }}</h3>
                 <p>Dalam Proses</p>
@@ -72,7 +80,7 @@
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-secondary">
+        <div class="small-box bg-gradient-secondary shadow-sm hover-scale">
             <div class="inner">
                 <h3>{{ $pengajuanMenunggu }}</h3>
                 <p>Menunggu</p>
@@ -90,41 +98,51 @@
 <!-- Pengajuan Terbaru -->
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Pengajuan Terbaru</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom">
+                <h3 class="card-title font-weight-bold">
+                    <i class="fas fa-history text-primary"></i> Pengajuan Terbaru
+                </h3>
                 <div class="card-tools">
-                    <a href="{{ route('warga.pengajuan.create') }}" class="btn btn-sm btn-primary">
+                    <a href="{{ route('warga.pengajuan.create') }}" class="btn btn-sm btn-primary shadow-sm">
                         <i class="fas fa-plus"></i> Ajukan Surat Baru
                     </a>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 @if($pengajuanTerbaru->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
                                 <tr>
-                                    <th>Jenis Surat</th>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
+                                    <th class="border-0"><i class="fas fa-file-alt"></i> Jenis Surat</th>
+                                    <th class="border-0"><i class="fas fa-calendar"></i> Tanggal Pengajuan</th>
+                                    <th class="border-0"><i class="fas fa-info-circle"></i> Status</th>
+                                    <th class="border-0 text-center"><i class="fas fa-cog"></i> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($pengajuanTerbaru as $pengajuan)
                                 <tr>
-                                    <td>{{ $pengajuan->suratJenis->nama }}</td>
-                                    <td>{{ $pengajuan->created_at->format('d/m/Y H:i') }}</td>
-                                    <td>
-                                        <span class="badge
+                                    <td class="align-middle">
+                                        <strong>{{ $pengajuan->suratJenis->nama }}</strong>
+                                    </td>
+                                    <td class="align-middle">
+                                        <i class="far fa-clock text-muted"></i>
+                                        {{ $pengajuan->created_at->format('d/m/Y H:i') }}
+                                        <br>
+                                        <small class="text-muted">{{ $pengajuan->created_at->diffForHumans() }}</small>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="badge badge-pill px-3 py-2
                                             @if($pengajuan->status == 'idle') badge-warning
                                             @elseif($pengajuan->status == 'proses') badge-info
                                             @else badge-success @endif">
+                                            <i class="fas fa-circle" style="font-size: 8px;"></i>
                                             {{ $pengajuan->status_label }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="align-middle text-center">
                                         <a href="{{ route('warga.pengajuan.show', $pengajuan->id) }}"
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-eye"></i> Detail
@@ -136,11 +154,14 @@
                         </table>
                     </div>
                 @else
-                    <div class="text-center py-4">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">Belum ada pengajuan surat.</p>
-                        <a href="{{ route('warga.pengajuan.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Ajukan Surat Pertama Anda
+                    <div class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-inbox fa-4x text-muted opacity-50"></i>
+                        </div>
+                        <h5 class="text-muted">Belum ada pengajuan surat</h5>
+                        <p class="text-muted mb-4">Mulai ajukan surat pertama Anda sekarang!</p>
+                        <a href="{{ route('warga.pengajuan.create') }}" class="btn btn-primary shadow-sm">
+                            <i class="fas fa-plus-circle"></i> Ajukan Surat Pertama
                         </a>
                     </div>
                 @endif
