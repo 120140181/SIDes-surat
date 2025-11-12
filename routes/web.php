@@ -39,7 +39,7 @@ Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController
     ->name('logout');
 
 // ==================== PROTECTED ROUTES (Harus Login) ====================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'prevent.back'])->group(function () {
 
     // ==================== WARGA ROUTES ====================
     Route::middleware([WargaMiddleware::class])

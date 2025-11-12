@@ -15,10 +15,20 @@
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^2.0.0",
         "postcss": "^8.4.31",
-        "tailwindcss": "^3.1.0",
+        "tailwindcss": "^3.4.18",
         "vite": "^7.0.7"
     },
     "dependencies": {
         "sweetalert2": "^11.26.3"
-    }
+    },
+    "name": "sides-surat",
+    "version": "1.0.0",
+    "description": "Sebuah aplikasi web modern berbasis Laravel untuk mengelola layanan administratif desa seperti pembuatan surat keterangan, surat pengantar, dan surat izin.",
+    "main": "postcss.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

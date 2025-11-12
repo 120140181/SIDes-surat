@@ -13,6 +13,78 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        /* Modern Navbar & Sidebar Styles */
+        .main-header.navbar {
+            border-bottom: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .main-header .navbar-nav .nav-link {
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .main-header .navbar-nav .nav-link:hover {
+            color: #667eea;
+        }
+
+        .main-sidebar {
+            box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-dark-primary .brand-link {
+            background: #343a40;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-dark-primary .brand-link:hover {
+            background: #3f474e;
+        }
+
+        .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active:hover {
+            background: #0069d9;
+        }
+
+        .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .content-wrapper {
+            background: #f8f9fa;
+        }
+
+        .content-header h1 {
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .breadcrumb {
+            background: transparent;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: #cbd5e0;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: #718096;
+        }
+    </style>
     @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -106,24 +178,6 @@
         <!-- Main Content -->
         <div class="content">
             <div class="container-fluid">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                @endif
-
                 @yield('content')
             </div>
         </div>
@@ -140,6 +194,51 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Global SweetAlert Handler for Session Messages
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end',
+            background: '#f0fdf4',
+            iconColor: '#22c55e'
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end',
+            background: '#fef2f2',
+            iconColor: '#ef4444'
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Validasi Gagal!',
+            html: '<ul style="text-align: left; padding-left: 20px;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#667eea'
+        });
+    @endif
+</script>
 @stack('scripts')
 </body>
 </html>

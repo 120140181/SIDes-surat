@@ -50,9 +50,8 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect('/warga/dashboard')
-            ->with('success', 'Registrasi berhasil! Silakan lengkapi data profile Anda.');
+        // Redirect ke login dengan success message
+        return redirect()->route('login')
+            ->with('success', 'Registrasi berhasil! Silakan login dengan akun Anda.');
     }
 }
