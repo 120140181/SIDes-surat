@@ -516,8 +516,7 @@
     @endif
 
     // Success message from registration
-    @if(session('success') && !session('login_success'))
-        Swal.fire({
+    @if(session('success') && !session('login_success'))\n        Swal.fire({
             icon: 'success',
             title: 'Berhasil!',
             text: '{{ session('success') }}',
@@ -528,6 +527,22 @@
             position: 'top-end',
             background: '#f0f9ff',
             iconColor: '#667eea'
+        });
+    @endif
+
+    // Logout success message
+    @if(session('logout_success'))
+        Swal.fire({
+            icon: 'warning',
+            title: 'Anda Sudah Logout',
+            html: 'Sesi Anda telah berakhir.<br>Silakan <strong>login kembali</strong> untuk melanjutkan.',
+            confirmButtonText: '<i class=\"fas fa-sign-in-alt\"></i> Login',
+            confirmButtonColor: '#667eea',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            // Focus ke input NIK setelah menutup alert
+            document.getElementById('nik').focus();
         });
     @endif
 </script>

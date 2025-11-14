@@ -34,33 +34,8 @@
 
 <!-- Logout -->
 <li class="nav-item">
-    <a href="#" class="nav-link text-danger" onclick="event.preventDefault(); confirmLogout();">
+    <a href="#" class="nav-link text-danger" onclick="confirmLogout(); return false;">
         <i class="nav-icon fas fa-sign-out-alt"></i>
         <p>Logout</p>
     </a>
 </li>
-
-<form method="POST" action="{{ route('logout') }}" id="logout-form-sidebar" style="display: none;">
-    @csrf
-</form>
-
-@push('scripts')
-<script>
-    function confirmLogout() {
-        Swal.fire({
-            title: 'Konfirmasi Logout',
-            text: 'Apakah Anda yakin ingin keluar?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#667eea',
-            cancelButtonColor: '#cbd5e0',
-            confirmButtonText: 'Ya, Logout',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logout-form-sidebar').submit();
-            }
-        });
-    }
-</script>
-@endpush

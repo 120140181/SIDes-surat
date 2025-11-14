@@ -18,7 +18,23 @@ class PengajuanSurat extends Model
         'surat_jenis_id',
         'keperluan',
         'status',
-        'keterangan_admin'
+        'keterangan_admin',
+        // Dokumen umum
+        'dokumen_kk',
+        'dokumen_ktp',
+        // Dokumen khusus
+        'dokumen_foto_usaha',
+        'dokumen_foto_rumah',
+        'dokumen_pas_photo',
+        'dokumen_ktp_ortu',
+        'dokumen_ktp_ortu2',
+        'dokumen_surat_lahir',
+        'dokumen_buku_nikah',
+        'dokumen_ktp_bersangkutan',
+        'dokumen_surat_rekomendasi',
+        // Data tambahan
+        'tanggal_meninggal',
+        'tpu'
     ];
 
     protected $casts = [

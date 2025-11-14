@@ -123,9 +123,9 @@
                     </a>
                     @endif
                     <div class="dropdown-divider"></div>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="dropdown-item">
+                        <button type="button" class="dropdown-item" onclick="confirmLogout()">
                             <i class="fas fa-sign-out-alt mr-2"></i> Logout
                         </button>
                     </form>
@@ -239,6 +239,27 @@
         });
     @endif
 </script>
-@stack('scripts')
+    @stack('scripts')
+
+    <script>
+    // SweetAlert Logout Confirmation
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Konfirmasi Logout',
+            text: 'Apakah Anda yakin ingin keluar dari sistem?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Ya, Logout',
+            cancelButtonText: '<i class="fas fa-times"></i> Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logoutForm').submit();
+            }
+        });
+    }
+    </script>
 </body>
 </html>

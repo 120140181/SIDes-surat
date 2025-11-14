@@ -460,7 +460,7 @@
                     <span>Form Pengajuan Surat</span>
                 </h3>
             </div>
-            <form method="POST" action="{{ route('warga.pengajuan.store') }}" id="formPengajuan">
+            <form method="POST" action="{{ route('warga.pengajuan.store') }}" id="formPengajuan" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
@@ -469,10 +469,10 @@
                             Jenis Surat <span class="text-danger">*</span>
                         </label>
                         <select class="form-control @error('surat_jenis_id') is-invalid @enderror"
-                                id="surat_jenis_id" name="surat_jenis_id" required>
+                                id="surat_jenis_id" name="surat_jenis_id" required onchange="updateDocumentRequirements()">
                             <option value="">-- Pilih Jenis Surat --</option>
                             @foreach($jenisSurat as $jenis)
-                                <option value="{{ $jenis->id }}"
+                                <option value="{{ $jenis->id }}" data-nama="{{ strtolower($jenis->nama) }}"
                                     {{ old('surat_jenis_id') == $jenis->id ? 'selected' : '' }}>
                                     {{ $jenis->nama }}
                                 </option>
@@ -502,6 +502,271 @@
                         <small class="form-text text-muted">
                             <i class="fas fa-lightbulb"></i> Minimal 10 karakter. Jelaskan secara detail untuk mempermudah proses verifikasi.
                         </small>
+                    </div>
+
+                    <!-- Dokumen Requirements - Dynamic based on Jenis Surat -->
+                    <div id="documentSection" style="display: none;">
+                        <hr style="margin: 30px 0; border-top: 2px solid #e2e8f0;">
+                        <h5 style="color: #2d3748; font-weight: 700; margin-bottom: 20px;">
+                            <i class="fas fa-paperclip"></i> Upload Dokumen Persyaratan
+                        </h5>
+
+                        <!-- Dokumen KK - All -->
+                        <div class="form-group doc-field doc-all">
+                            <label for="dokumen_kk">
+                                <i class="fas fa-users text-info"></i>
+                                Kartu Keluarga (KK) <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control-file @error('dokumen_kk') is-invalid @enderror"
+                                   id="dokumen_kk" name="dokumen_kk" accept="image/*,.pdf">
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                            </small>
+                            @error('dokumen_kk')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Dokumen KTP - All -->
+                        <div class="form-group doc-field doc-all">
+                            <label for="dokumen_ktp">
+                                <i class="fas fa-id-card text-info"></i>
+                                KTP Pemohon <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control-file @error('dokumen_ktp') is-invalid @enderror"
+                                   id="dokumen_ktp" name="dokumen_ktp" accept="image/*,.pdf">
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                            </small>
+                            @error('dokumen_ktp')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Foto Usaha - Surat Usaha -->
+                        <div class="form-group doc-field doc-usaha" style="display: none;">
+                            <label for="dokumen_foto_usaha">
+                                <i class="fas fa-store text-success"></i>
+                                Foto Usaha <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control-file @error('dokumen_foto_usaha') is-invalid @enderror"
+                                   id="dokumen_foto_usaha" name="dokumen_foto_usaha" accept="image/*">
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Foto tempat usaha dari depan. Format: JPG, PNG (Max: 2MB)
+                            </small>
+                            @error('dokumen_foto_usaha')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Foto Rumah - SKTM -->
+                        <div class="form-group doc-field doc-sktm" style="display: none;">
+                            <label for="dokumen_foto_rumah">
+                                <i class="fas fa-home text-warning"></i>
+                                Foto Rumah <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control-file @error('dokumen_foto_rumah') is-invalid @enderror"
+                                   id="dokumen_foto_rumah" name="dokumen_foto_rumah" accept="image/*" multiple>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Upload beberapa foto: tampak depan, samping, lantai, dll. Format: JPG, PNG (Max: 2MB per file)
+                            </small>
+                            @error('dokumen_foto_rumah')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Pas Photo - SKCK -->
+                        <div class="form-group doc-field doc-skck" style="display: none;">
+                            <label for="dokumen_pas_photo">
+                                <i class="fas fa-camera text-primary"></i>
+                                Pas Photo 3x4 Latar Biru <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control-file @error('dokumen_pas_photo') is-invalid @enderror"
+                                   id="dokumen_pas_photo" name="dokumen_pas_photo" accept="image/*">
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Pas photo ukuran 3x4 dengan latar belakang biru. Format: JPG, PNG (Max: 2MB)
+                            </small>
+                            @error('dokumen_pas_photo')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Data Kematian - Surat Kematian -->
+                        <div class="doc-field doc-kematian" style="display: none;">
+                            <div class="form-group">
+                                <label for="tanggal_meninggal">
+                                    <i class="fas fa-calendar-alt text-danger"></i>
+                                    Tanggal Meninggal <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" class="form-control @error('tanggal_meninggal') is-invalid @enderror"
+                                       id="tanggal_meninggal" name="tanggal_meninggal" value="{{ old('tanggal_meninggal') }}">
+                                @error('tanggal_meninggal')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="tpu">
+                                    <i class="fas fa-map-marker-alt text-danger"></i>
+                                    Tempat Pemakaman Umum (TPU) <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control @error('tpu') is-invalid @enderror"
+                                       id="tpu" name="tpu" value="{{ old('tpu') }}"
+                                       placeholder="Contoh: TPU Tanah Kusir Jakarta">
+                                @error('tpu')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Dokumen Kelahiran - Surat Kelahiran -->
+                        <div class="doc-field doc-kelahiran" style="display: none;">
+                            <div class="form-group">
+                                <label for="dokumen_ktp_ortu">
+                                    <i class="fas fa-id-card text-info"></i>
+                                    KTP Orang Tua (Ayah) <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_ktp_ortu') is-invalid @enderror"
+                                       id="dokumen_ktp_ortu" name="dokumen_ktp_ortu" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_ktp_ortu')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="dokumen_ktp_ortu2">
+                                    <i class="fas fa-id-card text-info"></i>
+                                    KTP Orang Tua (Ibu) <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_ktp_ortu2') is-invalid @enderror"
+                                       id="dokumen_ktp_ortu2" name="dokumen_ktp_ortu2" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_ktp_ortu2')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="dokumen_surat_lahir">
+                                    <i class="fas fa-file-medical text-success"></i>
+                                    Surat Keterangan Lahir dari Dokter <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_surat_lahir') is-invalid @enderror"
+                                       id="dokumen_surat_lahir" name="dokumen_surat_lahir" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_surat_lahir')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="dokumen_buku_nikah">
+                                    <i class="fas fa-book text-danger"></i>
+                                    Buku Nikah <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_buku_nikah') is-invalid @enderror"
+                                       id="dokumen_buku_nikah" name="dokumen_buku_nikah" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_buku_nikah')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="dokumen_ktp_bersangkutan">
+                                    <i class="fas fa-id-card text-info"></i>
+                                    KTP Yang Bersangkutan (Jika sudah punya)
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_ktp_bersangkutan') is-invalid @enderror"
+                                       id="dokumen_ktp_bersangkutan" name="dokumen_ktp_bersangkutan" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Opsional. Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_ktp_bersangkutan')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Dokumen Nikah - Surat Pengantar Nikah -->
+                        <div class="doc-field doc-nikah" style="display: none;">
+                            <div class="form-group">
+                                <label for="dokumen_ktp_bersangkutan">
+                                    <i class="fas fa-id-card text-info"></i>
+                                    KTP Yang Bersangkutan <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_ktp_bersangkutan') is-invalid @enderror"
+                                       id="dokumen_ktp_bersangkutan_nikah" name="dokumen_ktp_bersangkutan" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_ktp_bersangkutan')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="dokumen_ktp_ortu">
+                                    <i class="fas fa-id-card text-info"></i>
+                                    KTP Orang Tua <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_ktp_ortu') is-invalid @enderror"
+                                       id="dokumen_ktp_ortu_nikah" name="dokumen_ktp_ortu" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_ktp_ortu')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="dokumen_surat_rekomendasi">
+                                    <i class="fas fa-file-signature text-warning"></i>
+                                    Surat Rekomendasi Pengantar dari Luar (Jika Numpang Nikah)
+                                </label>
+                                <input type="file" class="form-control-file @error('dokumen_surat_rekomendasi') is-invalid @enderror"
+                                       id="dokumen_surat_rekomendasi" name="dokumen_surat_rekomendasi" accept="image/*,.pdf">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Opsional, hanya jika menikah di luar daerah asal. Format: JPG, PNG, PDF (Max: 2MB)
+                                </small>
+                                @error('dokumen_surat_rekomendasi')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer" style="background: #f7fafc; padding: 20px 30px;">
@@ -549,6 +814,55 @@
 
 @push('scripts')
 <script>
+    // Document requirements mapping
+    const documentRequirements = {
+        'domisili': ['all'],
+        'surat keterangan usaha': ['all', 'usaha'],
+        'surat keterangan tidak mampu': ['all', 'sktm'],
+        'skck': ['all', 'skck'],
+        'surat kematian': ['all', 'kematian'],
+        'surat kelahiran': ['all', 'kelahiran'],
+        'surat pengantar nikah': ['all', 'nikah']
+    };
+
+    function updateDocumentRequirements() {
+        const select = document.getElementById('surat_jenis_id');
+        const selectedOption = select.options[select.selectedIndex];
+        const jenisSurat = selectedOption.getAttribute('data-nama');
+
+        // Hide all document fields first
+        document.querySelectorAll('.doc-field').forEach(field => {
+            field.style.display = 'none';
+            // Remove required from hidden fields
+            field.querySelectorAll('input, textarea').forEach(input => {
+                input.removeAttribute('required');
+            });
+        });
+
+        // Hide document section
+        document.getElementById('documentSection').style.display = 'none';
+
+        if (jenisSurat && documentRequirements[jenisSurat]) {
+            // Show document section
+            document.getElementById('documentSection').style.display = 'block';
+
+            const requirements = documentRequirements[jenisSurat];
+
+            requirements.forEach(req => {
+                const fields = document.querySelectorAll(`.doc-${req}`);
+                fields.forEach(field => {
+                    field.style.display = 'block';
+                    // Add required to visible fields (except optional ones)
+                    field.querySelectorAll('input:not([id*="bersangkutan"]):not([id*="rekomendasi"])').forEach(input => {
+                        if (input.type === 'file' || input.type === 'text' || input.type === 'date') {
+                            input.setAttribute('required', 'required');
+                        }
+                    });
+                });
+            });
+        }
+    }
+
     function confirmSubmit() {
         const jenisSurat = document.getElementById('surat_jenis_id');
         const keperluan = document.getElementById('keperluan');
@@ -571,6 +885,38 @@
                 confirmButtonColor: '#667eea'
             });
             return;
+        }
+
+        // Check required documents
+        const documentSection = document.getElementById('documentSection');
+        if (documentSection.style.display !== 'none') {
+            const requiredDocs = documentSection.querySelectorAll('input[required]');
+            let missingDocs = [];
+
+            requiredDocs.forEach(doc => {
+                if (doc.type === 'file' && !doc.files.length) {
+                    const label = doc.previousElementSibling.textContent.replace('*', '').trim();
+                    missingDocs.push(label);
+                } else if ((doc.type === 'text' || doc.type === 'date') && !doc.value) {
+                    const label = doc.previousElementSibling.textContent.replace('*', '').trim();
+                    missingDocs.push(label);
+                }
+            });
+
+            if (missingDocs.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Dokumen Belum Lengkap!',
+                    html: `<div style="text-align: left; padding: 10px;">
+                        <p>Dokumen berikut masih belum diupload:</p>
+                        <ul style="color: #e53e3e; font-weight: 600;">
+                            ${missingDocs.map(doc => `<li>${doc}</li>`).join('')}
+                        </ul>
+                    </div>`,
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
         }
 
         Swal.fire({
@@ -602,7 +948,7 @@
                 // Show loading
                 Swal.fire({
                     title: 'Mengirim Pengajuan...',
-                    html: 'Mohon tunggu sebentar',
+                    html: 'Mohon tunggu sebentar, sedang mengupload dokumen...',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     didOpen: () => {
@@ -614,11 +960,46 @@
             }
         });
     }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDocumentRequirements();
+    });
 </script>
 
 <style>
     .swal-wide {
         width: 600px !important;
+    }
+
+    .form-control-file {
+        display: block;
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 1rem;
+        border: 2px dashed #cbd5e0;
+        border-radius: 10px;
+        background: #f7fafc;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .form-control-file:hover {
+        border-color: #667eea;
+        background: white;
+    }
+
+    .form-control-file:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .form-control-file {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+        }
     }
 </style>
 @endpush

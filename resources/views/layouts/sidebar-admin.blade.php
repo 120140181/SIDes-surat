@@ -29,11 +29,8 @@
 
 <!-- Logout -->
 <li class="nav-item">
-    <form method="POST" action="{{ route('logout') }}" id="logout-form-sidebar">
-        @csrf
-        <a href="#" class="nav-link text-danger" onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
-            <i class="nav-icon fas fa-sign-out-alt"></i>
-            <p>Logout</p>
-        </a>
-    </form>
+    <a href="#" class="nav-link text-danger" onclick="confirmLogout(); return false;">
+        <i class="nav-icon fas fa-sign-out-alt"></i>
+        <p>Logout</p>
+    </a>
 </li>
