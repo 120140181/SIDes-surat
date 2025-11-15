@@ -279,7 +279,7 @@
                         </a>
                     @else
                         <a href="{{ route('register') }}" class="btn btn-light btn-lg btn-hero">
-                            <i class="bi bi-person-plus me-2"></i> Daftar Akun
+                            < class="bi bi-person-plus me-2"></`i> Daftar Akun
                         </a>
                     @endauth
                     <a href="#layanan" class="btn btn-outline-light btn-lg btn-hero">
