@@ -29,18 +29,16 @@ class AuthenticatedSessionController extends Controller
         if (Auth::attempt(['nik' => $request->nik, 'password' => $request->password])) {
             $request->session()->regenerate();
 
-            $userName = Auth::user()->nama_lengkap;
-            $dashboardUrl = Auth::user()->role === 'admin'
-                ? '/admin/dashboard'
-                : '/warga/dashboard';
+            $user = Auth::user();
 
-            // Simpan data untuk SweetAlert dengan redirect
-            $request->session()->flash('login_success', [
-                'name' => $userName,
-                'redirect' => $dashboardUrl
-            ]);
+            // Redirect berdasarkan role
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Selamat datang, ' . $user->nama_lengkap);
+            }
 
-            return redirect()->route('login');
+            return redirect()->route('warga.dashboard')
+                ->with('success', 'Selamat datang, ' . $user->nama_lengkap);
         }
 
         return back()->withErrors([
