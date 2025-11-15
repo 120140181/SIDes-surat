@@ -26,7 +26,7 @@ class PengajuanSuratController extends Controller
 
     public function create(): View
     {
-        $jenisSurat = SuratJenis::all();
+        $jenisSurat = SuratJenis::with('persyaratan')->get();
         return view('warga.pengajuan.create', compact('jenisSurat'));
     }
 
@@ -37,25 +37,65 @@ class PengajuanSuratController extends Controller
             'keperluan' => 'required|string|min:10|max:1000',
         ];
 
-        // Get jenis surat to determine required documents
-        $jenisSurat = SuratJenis::find($request->surat_jenis_id);
-        $jenisSuratNama = strtolower($jenisSurat->nama ?? '');
+        // Get jenis surat dengan persyaratan
+        $jenisSurat = SuratJenis::with('persyaratan')->find($request->surat_jenis_id);
 
-        // Add document validation rules based on jenis surat
-        $this->addDocumentRules($rules, $jenisSuratNama);
+        // Validasi persyaratan dinamis
+        foreach ($jenisSurat->persyaratan as $persyaratan) {
+            $fieldName = 'persyaratan_' . $persyaratan->id;
+
+            if ($persyaratan->wajib) {
+                if ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image') {
+                    $mimes = $persyaratan->tipe === 'image' ? 'jpeg,jpg,png' : 'jpeg,jpg,png,pdf';
+                    $rules[$fieldName] = "required|file|mimes:{$mimes}|max:2048";
+                } elseif ($persyaratan->tipe === 'date') {
+                    $rules[$fieldName] = 'required|date';
+                } else {
+                    $rules[$fieldName] = 'required|string|max:1000';
+                }
+            } else {
+                if ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image') {
+                    $mimes = $persyaratan->tipe === 'image' ? 'jpeg,jpg,png' : 'jpeg,jpg,png,pdf';
+                    $rules[$fieldName] = "nullable|file|mimes:{$mimes}|max:2048";
+                } elseif ($persyaratan->tipe === 'date') {
+                    $rules[$fieldName] = 'nullable|date';
+                } else {
+                    $rules[$fieldName] = 'nullable|string|max:1000';
+                }
+            }
+        }
 
         $validated = $request->validate($rules);
 
-        // Handle file uploads
-        $documentData = $this->handleDocumentUploads($request, $jenisSuratNama);
+        // Handle persyaratan uploads dan simpan ke JSON
+        $dataPersyaratan = [];
+        foreach ($jenisSurat->persyaratan as $persyaratan) {
+            $fieldName = 'persyaratan_' . $persyaratan->id;
 
-        // Create pengajuan with all data
+            if ($request->has($fieldName) || $request->hasFile($fieldName)) {
+                if ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image') {
+                    if ($request->hasFile($fieldName)) {
+                        $file = $request->file($fieldName);
+                        $userId = Auth::id();
+                        $timestamp = time();
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = "persyaratan_{$persyaratan->id}_{$userId}_{$timestamp}.{$extension}";
+                        $file->storeAs('dokumen_pengajuan', $filename, 'public');
+                        $dataPersyaratan[$persyaratan->kode] = "dokumen_pengajuan/{$filename}";
+                    }
+                } else {
+                    $dataPersyaratan[$persyaratan->kode] = $request->input($fieldName);
+                }
+            }
+        }
+
+        // Create pengajuan
         PengajuanSurat::create([
             'user_id' => Auth::id(),
             'surat_jenis_id' => $request->surat_jenis_id,
             'keperluan' => $request->keperluan,
+            'data_persyaratan' => $dataPersyaratan,
             'status' => 'idle',
-            ...$documentData
         ]);
 
         return redirect()->route('warga.pengajuan.index')
@@ -78,16 +118,16 @@ class PengajuanSuratController extends Controller
                 $rules['dokumen_foto_rumah'] = 'required|file|mimes:jpeg,jpg,png|max:2048';
                 break;
 
-            case 'skck':
+            case 'surat pengantar skck':
                 $rules['dokumen_pas_photo'] = 'required|file|mimes:jpeg,jpg,png|max:2048';
                 break;
 
-            case 'surat kematian':
+            case 'surat keterangan kematian':
                 $rules['tanggal_meninggal'] = 'required|date|before_or_equal:today';
                 $rules['tpu'] = 'required|string|max:255';
                 break;
 
-            case 'surat kelahiran':
+            case 'surat keterangan kelahiran':
                 $rules['dokumen_ktp_ortu'] = 'required|file|mimes:jpeg,jpg,png,pdf|max:2048';
                 $rules['dokumen_ktp_ortu2'] = 'required|file|mimes:jpeg,jpg,png,pdf|max:2048';
                 $rules['dokumen_surat_lahir'] = 'required|file|mimes:jpeg,jpg,png,pdf|max:2048';
@@ -129,18 +169,18 @@ class PengajuanSuratController extends Controller
                 }
                 break;
 
-            case 'skck':
+            case 'surat pengantar skck':
                 if ($request->hasFile('dokumen_pas_photo')) {
                     $documentData['dokumen_pas_photo'] = $this->uploadFile($request->file('dokumen_pas_photo'), 'pas_photo');
                 }
                 break;
 
-            case 'surat kematian':
+            case 'surat keterangan kematian':
                 $documentData['tanggal_meninggal'] = $request->tanggal_meninggal;
                 $documentData['tpu'] = $request->tpu;
                 break;
 
-            case 'surat kelahiran':
+            case 'surat keterangan kelahiran':
                 if ($request->hasFile('dokumen_ktp_ortu')) {
                     $documentData['dokumen_ktp_ortu'] = $this->uploadFile($request->file('dokumen_ktp_ortu'), 'ktp_ortu');
                 }

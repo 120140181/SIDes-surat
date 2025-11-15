@@ -151,18 +151,31 @@
     .btn-back-modern {
         background: white;
         color: #718096;
-        border: 2px solid #e2e8f0;
+        border: 2px solid #e5e7eb;
         border-radius: 10px;
-        padding: 10px 24px;
+        padding: 10px 18px;
         font-weight: 600;
         transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
     }
 
     .btn-back-modern:hover {
         border-color: #cbd5e0;
         color: #4a5568;
-        background: #f7fafc;
-        transform: translateX(-3px);
+        background: #f9fafb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .header-with-back {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
     }
 
     .status-info {
@@ -630,10 +643,15 @@
     <div class="col-lg-8">
         <div class="card detail-card">
             <div class="card-header">
-                <h3>
-                    <i class="fas fa-file-alt"></i>
-                    <span>Informasi Pengajuan</span>
-                </h3>
+                <div class="header-with-back">
+                    <h3 style="margin: 0;">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Informasi Pengajuan</span>
+                    </h3>
+                    <a href="{{ route('warga.pengajuan.index') }}" class="btn btn-back-modern">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -702,11 +720,7 @@
                 @endif
             </div>
             <div class="card-footer" style="background: #f7fafc; padding: 20px 25px; border-top: 2px solid #e2e8f0;">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <a href="{{ route('warga.pengajuan.index') }}" class="btn btn-back-modern mb-2">
-                        <i class="fas fa-arrow-left"></i> Kembali ke Daftar
-                    </a>
-
+                <div class="d-flex justify-content-end align-items-center flex-wrap">
                     @if($pengajuan->status == 'idle')
                     <span class="status-info idle mb-2">
                         <i class="fas fa-clock"></i>

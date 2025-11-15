@@ -14,10 +14,6 @@ use Illuminate\Support\Facades\Route;
 
 // ==================== PUBLIC ROUTES ====================
 Route::get('/', function () {
-    return response()->json(['status' => 'OK', 'message' => 'Laravel is running']);
-});
-
-Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
@@ -103,6 +99,12 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             Route::post('/jenis-surat/store', [JenisSuratController::class, 'store'])->name('jenis-surat-store');
             Route::put('/jenis-surat/{id}/update', [JenisSuratController::class, 'update'])->name('jenis-surat-update');
             Route::delete('/jenis-surat/{id}/destroy', [JenisSuratController::class, 'destroy'])->name('jenis-surat-destroy');
+
+            // Persyaratan Surat
+            Route::get('/jenis-surat/{id}/persyaratan', [JenisSuratController::class, 'persyaratan'])->name('jenis-surat-persyaratan');
+            Route::post('/jenis-surat/{id}/persyaratan/store', [JenisSuratController::class, 'storePersyaratan'])->name('jenis-surat-persyaratan-store');
+            Route::put('/jenis-surat/{jenisId}/persyaratan/{persyaratanId}/update', [JenisSuratController::class, 'updatePersyaratan'])->name('jenis-surat-persyaratan-update');
+            Route::delete('/jenis-surat/{jenisId}/persyaratan/{persyaratanId}/destroy', [JenisSuratController::class, 'destroyPersyaratan'])->name('jenis-surat-persyaratan-destroy');
         });
     });
 
@@ -110,5 +112,5 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
 
 // ==================== FALLBACK ROUTE ====================
 Route::fallback(function () {
-    return response()->view('errors.404', [], 404);
+    abort(404);
 });

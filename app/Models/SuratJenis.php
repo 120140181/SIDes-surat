@@ -20,4 +20,10 @@ class SuratJenis extends Model
     {
         return $this->hasMany(PengajuanSurat::class);
     }
+
+    // Relasi dengan persyaratan
+    public function persyaratan()
+    {
+        return $this->hasMany(SuratPersyaratan::class)->orderBy('urutan');
+    }
 }

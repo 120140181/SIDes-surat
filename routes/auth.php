@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -11,6 +12,22 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+// Admin Login Routes (separate from warga)
+Route::middleware('guest')->group(function () {
+    Route::get('admin/login', [AdminLoginController::class, 'showLoginForm'])
+        ->name('admin.login');
+
+    Route::post('admin/login', [AdminLoginController::class, 'login'])
+        ->name('admin.login.submit');
+});
+
+// Admin Logout
+Route::middleware('auth')->group(function () {
+    Route::post('admin/logout', [AdminLoginController::class, 'logout'])
+        ->name('admin.logout');
+});
+
+// Warga Login Routes
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');

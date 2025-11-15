@@ -18,6 +18,7 @@ class SuratJenisSeeder extends Seeder
             ['nama' => 'Surat Keterangan Kelahiran'],
             ['nama' => 'Surat Keterangan Kematian'],
             ['nama' => 'Surat Pengantar SKCK'],
+            ['nama' => 'Surat Pengantar Nikah'],
         ];
 
         foreach ($jenisSurat as $jenis) {

@@ -188,6 +188,32 @@
         color: white;
     }
 
+    .btn-persyaratan-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-persyaratan-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
     /* Empty State */
     .empty-state {
         text-align: center;
@@ -325,6 +351,12 @@
                                         <td>{{ $jenis->created_at->format('d/m/Y') }}</td>
                                         <td>
                                             <div class="action-buttons">
+                                                <a href="{{ route('admin.data.jenis-surat-persyaratan', $jenis->id) }}"
+                                                   class="btn btn-persyaratan-modern"
+                                                   title="Kelola Persyaratan">
+                                                    <i class="fas fa-list-check"></i> Persyaratan
+                                                </a>
+
                                                 <button type="button" class="btn btn-edit-modern"
                                                         onclick="showEditModal('{{ $jenis->id }}', '{{ $jenis->nama }}')">
                                                     <i class="fas fa-edit"></i> Edit

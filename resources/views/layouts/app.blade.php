@@ -61,6 +61,8 @@
 
         .content-wrapper {
             background: #f8f9fa;
+            min-height: calc(100vh - 57px - 57px); /* viewport height - navbar - footer */
+            padding-bottom: 3rem; /* Tambah jarak dari footer */
         }
 
         .content-header h1 {
@@ -123,7 +125,7 @@
                     </a>
                     @endif
                     <div class="dropdown-divider"></div>
-                    <form id="logoutForm" method="POST" action="{{ route('logout') }}">
+                    <form id="logoutForm" method="POST" action="{{ Auth::user()->role == 'admin' ? route('admin.logout') : route('logout') }}">
                         @csrf
                         <button type="button" class="dropdown-item" onclick="confirmLogout()">
                             <i class="fas fa-sign-out-alt mr-2"></i> Logout
@@ -181,6 +183,9 @@
                 @yield('content')
             </div>
         </div>
+
+        <!-- Spacer untuk jarak footer -->
+        <div style="height: 2rem;"></div>
     </div>
 
     <!-- Footer -->

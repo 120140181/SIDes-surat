@@ -218,17 +218,31 @@
     .btn-back-modern {
         background: white;
         color: #718096;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 10px 24px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 10px 18px;
         font-weight: 600;
         transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
     }
 
     .btn-back-modern:hover {
         border-color: #cbd5e0;
         color: #4a5568;
-        background: #f7fafc;
+        background: #f9fafb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .header-with-back {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
     }
 
     /* Documents Card */
@@ -433,14 +447,29 @@
 
 @section('content')
 <div class="container-fluid">
+    <!-- Header dengan tombol kembali -->
+    <div class="detail-card mb-3">
+        <div class="card-header">
+            <div class="header-with-back">
+                <h3 style="margin: 0;">
+                    <i class="fas fa-file-alt"></i>
+                    Detail Pengajuan Surat
+                </h3>
+                <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <!-- Detail Pengajuan Card -->
         <div class="col-lg-6">
             <div class="detail-card">
                 <div class="card-header">
                     <h3>
-                        <i class="fas fa-file-alt"></i>
-                        Detail Pengajuan
+                        <i class="fas fa-info-circle"></i>
+                        Informasi Pengajuan
                     </h3>
                 </div>
                 <div class="card-body p-0">
@@ -680,10 +709,7 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-3">
-                            <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
-                                <i class="fas fa-arrow-left"></i> Kembali
-                            </a>
+                        <div class="d-flex justify-content-end mt-3">
                             <button type="button" class="btn btn-update" onclick="confirmUpdate()">
                                 <i class="fas fa-save"></i> Simpan Perubahan
                             </button>

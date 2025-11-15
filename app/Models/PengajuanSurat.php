@@ -17,6 +17,7 @@ class PengajuanSurat extends Model
         'user_id',
         'surat_jenis_id',
         'keperluan',
+        'data_persyaratan',
         'status',
         'keterangan_admin',
         // Dokumen umum
@@ -39,6 +40,7 @@ class PengajuanSurat extends Model
 
     protected $casts = [
         'tanggal_lahir' => 'date',
+        'data_persyaratan' => 'array',
     ];
 
     // Relasi dengan user

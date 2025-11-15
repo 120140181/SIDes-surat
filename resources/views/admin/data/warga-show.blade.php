@@ -259,36 +259,31 @@
     .btn-back-modern {
         background: white;
         color: #718096;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 10px 24px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 10px 18px;
         font-weight: 600;
         transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
     }
 
     .btn-back-modern:hover {
         border-color: #cbd5e0;
         color: #4a5568;
-        background: #f7fafc;
-    }
-
-    .btn-back-top {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 24px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .btn-back-top:hover {
+        background: #f9fafb;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .header-with-back {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
     }
 
     .empty-state {
@@ -303,12 +298,6 @@
     }
 
     /* Responsive */
-    @media (max-width: 992px) {
-        .btn-back-top {
-            display: none;
-        }
-    }
-
     @media (max-width: 768px) {
         .detail-card .card-header {
             padding: 18px 20px;
@@ -348,11 +337,21 @@
 @endpush
 
 @section('content')
-<div class="container-fluid" style="position: relative;">
-    <!-- Tombol Kembali Desktop (Kanan Atas) -->
-    <a href="{{ route('admin.data.warga') }}" class="btn btn-back-top">
-        <i class="fas fa-arrow-left"></i> Kembali
-    </a>
+<div class="container-fluid">
+    <!-- Header dengan tombol kembali -->
+    <div class="detail-card mb-3">
+        <div class="card-header">
+            <div class="header-with-back">
+                <h3 style="margin: 0;">
+                    <i class="fas fa-user-circle"></i>
+                    Detail Data Warga
+                </h3>
+                <a href="{{ route('admin.data.warga') }}" class="btn btn-back-modern">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-lg-8">
@@ -586,13 +585,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- Tombol Kembali -->
-            <div class="text-center">
-                <a href="{{ route('admin.data.warga') }}" class="btn btn-back-modern">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Warga
-                </a>
             </div>
         </div>
     </div>
