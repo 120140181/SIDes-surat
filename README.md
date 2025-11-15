@@ -1,244 +1,137 @@
-# 🏢 Layanan Administratif Desa - Laravel
+# 🏢 Sistem Informasi Desa (SIDes) - Layanan Surat
 
-Sebuah aplikasi web modern berbasis Laravel untuk mengelola layanan administratif desa seperti pembuatan surat keterangan, surat pengantar, dan surat izin.
+Aplikasi web untuk mengelola pengajuan dan pembuatan surat-surat administratif desa secara digital. Memudahkan warga dalam mengajukan surat dan perangkat desa dalam mengelola layanan administrasi.
 
-![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-005C84?style=for-the-badge&logo=mysql&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Production-success?style=for-the-badge)
+
+---
+
+## 🎯 Tentang Sistem
+
+**SIDes-Surat** adalah sistem informasi berbasis web yang dirancang khusus untuk digitalisasi layanan pembuatan surat di tingkat desa. Sistem ini mengintegrasikan proses pengajuan surat dari warga hingga penerbitan oleh perangkat desa dalam satu platform yang mudah digunakan.
+
+### Tujuan
+- Mempermudah warga dalam mengajukan surat tanpa harus datang ke kantor desa
+- Meningkatkan efisiensi pelayanan administrasi desa
+- Memberikan transparansi status pengajuan surat kepada warga
+- Mengurangi penggunaan kertas (paperless)
+- Menyediakan data dan statistik pengajuan surat secara real-time
+
+---
 
 ## ✨ Fitur Utama
 
-- 🎨 **Dashboard Admin** - Management layanan dan surat
-- 👥 **Authentication System** - Login untuk admin dan warga
-- 📝 **Pengajuan Surat Online** - Warga bisa mengajukan surat secara online
-- 📊 **Tracking Status** - Melacak status pengajuan surat
-- 📱 **Responsive Design** - Tampilan optimal di semua perangkat
+### 👤 Untuk Warga
+- **Pengajuan Surat Online** - Ajukan berbagai jenis surat kapan saja, dimana saja
+- **Tracking Status** - Pantau perkembangan pengajuan surat secara real-time
+- **Upload Dokumen** - Unggah persyaratan yang dibutuhkan secara digital
+- **Notifikasi Status** - Mendapat pemberitahuan setiap perubahan status pengajuan
+- **Riwayat Pengajuan** - Lihat histori semua pengajuan surat yang pernah dibuat
 
-## 🛠️ Teknologi Stack
+### 🔧 Untuk Admin Desa
+- **Dashboard Terpusat** - Monitor semua pengajuan dalam satu tampilan
+- **Manajemen Jenis Surat** - Kelola berbagai jenis surat yang dapat diajukan
+- **Persyaratan Dinamis** - Tentukan persyaratan khusus untuk setiap jenis surat
+- **Proses Pengajuan** - Ubah status dan proses pengajuan surat dari warga
+- **Manajemen Warga** - Kelola data warga yang terdaftar
+- **Laporan & Statistik** - Lihat statistik pengajuan surat berdasarkan periode
 
-- **Laravel 10/11** - PHP Framework
-- **MySQL** - Database
-- **Bootstrap 5** - Frontend Framework
-- **JavaScript** - Interaktivitas
-- **Composer** - Dependency Management
+---
 
-## 🚀 Instalasi dan Setup
+## 🛠️ Teknologi
 
-### Prerequisites
-- PHP 8.1 atau lebih tinggi
-- Composer
-- MySQL
-- Node.js & NPM
+Dibangun dengan teknologi modern dan terpercaya:
 
-### 📥 Clone dan Install
+- **Laravel 12** - Framework PHP untuk backend yang robust
+- **MySQL 8** - Database management system yang andal
+- **AdminLTE 3** - Template dashboard yang professional
+- **Bootstrap 5** - Framework CSS untuk tampilan responsif
+- **SweetAlert2** - Notifikasi yang cantik dan user-friendly
 
-```bash
-# Clone repository
-git clone https://github.com/username/layanan-desa-laravel.git
+---
 
-# Masuk ke direktori project
-cd layanan-desa-laravel
+## 🔐 Keamanan
 
-# Install dependencies PHP
-composer install
+Sistem ini dilengkapi dengan fitur keamanan standar industri:
+- Enkripsi password dengan bcrypt
+- CSRF Protection
+- Role-based access control
+- Validasi input untuk mencegah SQL injection dan XSS
+- Secure file upload dengan validasi tipe file
 
-# Install dependencies JavaScript
-npm install
+---
 
-# Build assets
-npm run build
+## 📱 Tampilan
 
-# Copy environment file
-cp .env.example .env
+- **Responsive Design** - Dapat diakses dari desktop, tablet, dan smartphone
+- **Modern UI/UX** - Interface yang intuitif dan mudah digunakan
+- **Fast Loading** - Optimasi performa untuk akses cepat
+- **Mobile Friendly** - Tampilan yang optimal di perangkat mobile
 
-# Generate application key
-php artisan key:generate
-```
 
-### 🗄️ Setup Database
+---
 
-```bash
-# Buat database MySQL
-mysql -u root -p
-CREATE DATABASE layanan_desa;
+## 📊 Status Pengajuan
 
-# Konfigurasi .env file
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=layanan_desa
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
+Sistem menggunakan 3 status untuk tracking pengajuan:
 
-### 🔧 Migration dan Seeding
+1. **⏳ Menunggu (Idle)** - Pengajuan baru menunggu diproses
+2. **🔄 Diproses** - Pengajuan sedang dalam proses pembuatan
+3. **✅ Selesai** - Surat sudah selesai dibuat dan dapat diambil
 
-```bash
-# Jalankan migration
-php artisan migrate
+---
 
-# Jalankan seeder (data dummy)
-php artisan db:seed
+## 👥 Target Pengguna
 
-# atau jalankan migrasi + seeding sekaligus
-php artisan migrate --seed
-```
+1. **Warga Desa** - Masyarakat yang membutuhkan layanan pembuatan surat
+2. **Perangkat Desa** - Admin yang mengelola dan memproses pengajuan surat
+3. **Kepala Desa** - Monitoring dan approval pengajuan surat
 
-### 👤 Setup User Default
+---
 
-```bash
-# Buat user admin
-php artisan make:filament-user
+## 🎓 Jenis Surat yang Didukung
 
-# atau melalui tinker
-php artisan tinker
->>> User::create([
-    'name' => 'Admin',
-    'email' => 'admin@desa.id',
-    'password' => Hash::make('password123')
-]);
-```
+Sistem ini dapat menangani berbagai jenis surat administratif desa, seperti:
+- Surat Keterangan Domisili
+- Surat Keterangan Usaha
+- Surat Pengantar KTP/KK
+- Surat Keterangan Tidak Mampu
+- Dan jenis surat lainnya (dapat dikustomisasi)
 
-### 🎯 Menjalankan Aplikasi
+---
 
-```bash
-# Jalankan development server
-php artisan serve
+## 📞 Dukungan
 
-# Jalankan queue worker (jika menggunakan queue)
-php artisan queue:work
+Untuk informasi lebih lanjut atau bantuan teknis, silakan hubungi:
 
-# Jalankan scheduler (untuk task otomatis)
-php artisan schedule:work
-```
+**Desa Gedung Harapan**  
+📧 Email: [contact@desa.id]  
+📱 WhatsApp: [nomor kontak]  
+🌐 Website: [[website desa](https://sides-gedungharapan.sevalla.app/)]
 
-Akses aplikasi di: `http://localhost:8000`
+---
 
-## 📁 Struktur Project
+## 📄 Lisensi
 
-```
-layanan-desa-laravel/
-├── app/
-│   ├── Models/
-│   │   ├── User.php
-│   │   ├── SuratKeterangan.php
-│   │   ├── SuratPengantar.php
-│   │   └── SuratIzin.php
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   └── Requests/
-│   └── Providers/
-├── database/
-│   ├── migrations/
-│   └── seeders/
-├── resources/
-│   ├── views/
-│   └── assets/
-├── routes/
-│   ├── web.php
-│   └── api.php
-├── config/
-└── public/
-```
+© 2025 Desa Gedung Harapan. All rights reserved.
 
-## 👥 Default Login
-
-**Admin:**
-- Email: admin@desa.id
-- Password: password123
-
-**Warga:**
-- Email: warga@desa.id  
-- Password: password123
-
-## 🗃️ Fitur Database
-
-### Tabel Utama:
-- `users` - Data pengguna (admin & warga)
-- `surat_keterangan` - Data pengajuan surat keterangan
-- `surat_pengantar` - Data pengajuan surat pengantar
-- `surat_izin` - Data pengajuan surat izin
-- `layanan` - Data master layanan
-- `status_pengajuan` - Tracking status
-
-## 🔧 Development
-
-```bash
-# Clear cache
-php artisan optimize:clear
-
-# Generate ide helper
-php artisan ide-helper:generate
-
-# Run tests
-php artisan test
-
-# Check routes
-php artisan route:list
-```
-
-## 🌐 Production Deployment
-
-```bash
-# Optimize for production
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Run migration in production
-php artisan migrate --force
-```
-
-## 🤝 Kontribusi
-
-1. Fork project
-2. Create feature branch (`git checkout -b feature/NewFeature`)
-3. Commit changes (`git commit -m 'Add NewFeature'`)
-4. Push branch (`git push origin feature/NewFeature`)
-5. Open Pull Request
-
-## 📝 Todo List
-
-- [ ] Integrasi payment gateway
-- [ ] API untuk mobile app
-- [ ] Export laporan PDF/Excel
-- [ ] Sistem notifikasi email/SMS
-- [ ] Integrasi dengan sistem eksternal
-
-## 🐛 Troubleshooting
-
-**Common Issues:**
-
-```bash
-# Permission error
-chmod -R 775 storage bootstrap/cache
-
-# Composer error
-composer dump-autoload
-
-# Node modules error
-rm -rf node_modules package-lock.json
-npm install
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-Jika mengalami masalah:
-1. Check [Issues](../../issues)
-2. Buat issue baru dengan detail error
-3. Contact: dev@desa.id
+Project ini dikembangkan khusus untuk keperluan administrasi Desa Gedung Harapan.
 
 ---
 
 <div align="center">
 
-### 🚀 Built with Laravel & ❤️
+### 🏛️ Sistem Informasi Desa Gedung Harapan
 
-**Jangan lupa untuk ⭐ repository ini!**
+**Melayani dengan Hati, Bergerak dengan Teknologi**
+
+![Status](https://img.shields.io/badge/Status-🟢%20Production%20Ready-success?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.0-blue?style=flat-square)
+![Last%20Update](https://img.shields.io/badge/Last%20Update-November%202025-orange?style=flat-square)
+
+**Meningkatkan kualitas pelayanan publik melalui digitalisasi**
 
 </div>
