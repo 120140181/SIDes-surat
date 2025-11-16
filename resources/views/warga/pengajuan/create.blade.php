@@ -750,7 +750,6 @@
 </script>
 @endsection
 
-@push('styles')
 <style>
     .swal-wide {
         width: 600px !important;
