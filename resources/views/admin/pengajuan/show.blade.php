@@ -638,12 +638,12 @@
                                     </div>
                                     @if($isFile)
                                         <div class="document-actions">
-                                            <a href="{{ Storage::url($value) }}"
+                                            <a href="{{ url('storage/' . $value) }}"
                                                target="_blank"
                                                class="btn-view-doc">
                                                 <i class="fas fa-eye"></i> Lihat
                                             </a>
-                                            <a href="{{ Storage::url($value) }}"
+                                            <a href="{{ url('storage/' . $value) }}"
                                                download
                                                class="btn-download-doc">
                                                 <i class="fas fa-download"></i> Download
