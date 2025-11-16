@@ -748,72 +748,7 @@
         updateDocumentRequirements();
     });
 </script>
-                }
-            });
-
-            if (missingDocs.length > 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Dokumen Belum Lengkap!',
-                    html: `<div style="text-align: left; padding: 10px;">
-                        <p>Dokumen berikut masih belum diupload:</p>
-                        <ul style="color: #e53e3e; font-weight: 600;">
-                            ${missingDocs.map(doc => `<li>${doc}</li>`).join('')}
-                        </ul>
-                    </div>`,
-                    confirmButtonColor: '#667eea'
-                });
-                return;
-            }
-        }
-
-        Swal.fire({
-            title: 'Konfirmasi Pengajuan Surat',
-            html: `
-                <div style="text-align: left; padding: 10px 20px;">
-                    <p style="margin-bottom: 15px; color: #4a5568;">Apakah Anda yakin ingin mengajukan surat dengan detail berikut?</p>
-                    <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                        <strong style="color: #2d3748;">Jenis Surat:</strong><br>
-                        <span style="color: #667eea;">${jenisSurat.options[jenisSurat.selectedIndex].text}</span>
-                    </div>
-                    <div style="background: #f7fafc; padding: 15px; border-radius: 8px;">
-                        <strong style="color: #2d3748;">Keperluan:</strong><br>
-                        <span style="color: #4a5568;">${keperluan.value.substring(0, 100)}${keperluan.value.length > 100 ? '...' : ''}</span>
-                    </div>
-                </div>
-            `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#667eea',
-            cancelButtonColor: '#cbd5e0',
-            confirmButtonText: '<i class="fas fa-check"></i> Ya, Ajukan',
-            cancelButtonText: '<i class="fas fa-times"></i> Batal',
-            customClass: {
-                popup: 'swal-wide'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Show loading
-                Swal.fire({
-                    title: 'Mengirim Pengajuan...',
-                    html: 'Mohon tunggu sebentar, sedang mengupload dokumen...',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                document.getElementById('formPengajuan').submit();
-            }
-        });
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        updateDocumentRequirements();
-    });
-</script>
+@endsection
 
 <style>
     .swal-wide {
