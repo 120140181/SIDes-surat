@@ -28,7 +28,7 @@ class PengajuanSuratController extends Controller
 
     public function show($id): View
     {
-        $pengajuan = PengajuanSurat::with(['user', 'suratJenis'])
+        $pengajuan = PengajuanSurat::with(['user', 'suratJenis.persyaratan'])
             ->findOrFail($id);
 
         return view('admin.pengajuan.show', compact('pengajuan'));

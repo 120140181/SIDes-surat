@@ -615,44 +615,49 @@
                 <div class="card-body p-0">
                     @php
                         $hasDocuments = false;
-                        $documents = [
-                            ['field' => 'dokumen_kk', 'label' => 'Kartu Keluarga (KK)', 'icon' => 'fas fa-users'],
-                            ['field' => 'dokumen_ktp', 'label' => 'KTP Pemohon', 'icon' => 'fas fa-id-card'],
-                            ['field' => 'dokumen_foto_usaha', 'label' => 'Foto Usaha', 'icon' => 'fas fa-store'],
-                            ['field' => 'dokumen_foto_rumah', 'label' => 'Foto Rumah', 'icon' => 'fas fa-home'],
-                            ['field' => 'dokumen_pas_photo', 'label' => 'Pas Photo 3x4', 'icon' => 'fas fa-camera'],
-                            ['field' => 'dokumen_ktp_ortu', 'label' => 'KTP Orang Tua (Ayah)', 'icon' => 'fas fa-id-card'],
-                            ['field' => 'dokumen_ktp_ortu2', 'label' => 'KTP Orang Tua (Ibu)', 'icon' => 'fas fa-id-card'],
-                            ['field' => 'dokumen_surat_lahir', 'label' => 'Surat Keterangan Lahir', 'icon' => 'fas fa-file-medical'],
-                            ['field' => 'dokumen_buku_nikah', 'label' => 'Buku Nikah', 'icon' => 'fas fa-book'],
-                            ['field' => 'dokumen_ktp_bersangkutan', 'label' => 'KTP Yang Bersangkutan', 'icon' => 'fas fa-id-card'],
-                            ['field' => 'dokumen_surat_rekomendasi', 'label' => 'Surat Rekomendasi', 'icon' => 'fas fa-file-signature'],
-                        ];
+                        $dataPersyaratan = is_string($pengajuan->data_persyaratan)
+                            ? json_decode($pengajuan->data_persyaratan, true)
+                            : $pengajuan->data_persyaratan;
+
+                        // Get persyaratan for this jenis surat
+                        $persyaratanList = $pengajuan->suratJenis->persyaratan ?? [];
                     @endphp
 
-                    @foreach($documents as $doc)
-                        @if($pengajuan->{$doc['field']})
-                            @php $hasDocuments = true; @endphp
-                            <div class="document-item">
-                                <div class="document-label">
-                                    <i class="{{ $doc['icon'] }}"></i>
-                                    <span>{{ $doc['label'] }}</span>
+                    @if($dataPersyaratan && count($dataPersyaratan) > 0)
+                        @foreach($persyaratanList as $persyaratan)
+                            @if(isset($dataPersyaratan[$persyaratan->kode]))
+                                @php
+                                    $hasDocuments = true;
+                                    $value = $dataPersyaratan[$persyaratan->kode];
+                                    $isFile = ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image');
+                                @endphp
+                                <div class="document-item">
+                                    <div class="document-label">
+                                        <i class="fas fa-{{ $persyaratan->tipe === 'image' ? 'image' : ($persyaratan->tipe === 'file' ? 'file-pdf' : 'info-circle') }}"></i>
+                                        <span>{{ $persyaratan->nama }}</span>
+                                    </div>
+                                    @if($isFile)
+                                        <div class="document-actions">
+                                            <a href="{{ Storage::url($value) }}"
+                                               target="_blank"
+                                               class="btn-view-doc">
+                                                <i class="fas fa-eye"></i> Lihat
+                                            </a>
+                                            <a href="{{ Storage::url($value) }}"
+                                               download
+                                               class="btn-download-doc">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                        </div>
+                                    @else
+                                        <div class="text-muted" style="font-size: 0.9rem;">
+                                            {{ $value }}
+                                        </div>
+                                    @endif
                                 </div>
-                                <div class="document-actions">
-                                    <a href="{{ Storage::url($pengajuan->{$doc['field']}) }}"
-                                       target="_blank"
-                                       class="btn-view-doc">
-                                        <i class="fas fa-eye"></i> Lihat
-                                    </a>
-                                    <a href="{{ Storage::url($pengajuan->{$doc['field']}) }}"
-                                       download
-                                       class="btn-download-doc">
-                                        <i class="fas fa-download"></i> Download
-                                    </a>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
+                            @endif
+                        @endforeach
+                    @endif
 
                     @if(!$hasDocuments)
                         <div class="no-documents">
