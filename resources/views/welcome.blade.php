@@ -273,15 +273,9 @@
                     Layanan pengurusan surat menyurat secara online yang cepat, mudah, dan transparan untuk warga Desa Gedung Harapan.
                 </p>
                 <div class="d-flex gap-3 flex-wrap" style="animation-delay: 0.6s;">
-                    @auth
-                        <a href="{{ route('home') }}" class="btn btn-light btn-lg btn-hero">
-                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('register') }}" class="btn btn-light btn-lg btn-hero">
-                            <i class="bi bi-person-plus me-2"></i> Daftar Akun
-                        </a>
-                    @endauth
+                    <a href="{{ route('register') }}" class="btn btn-light btn-lg btn-hero">
+                        <i class="bi bi-person-plus me-2"></i> Daftar Akun
+                    </a>
                     <a href="#layanan" class="btn btn-outline-light btn-lg btn-hero">
                         <i class="bi bi-info-circle me-2"></i> Pelajari Lebih Lanjut
                     </a>
