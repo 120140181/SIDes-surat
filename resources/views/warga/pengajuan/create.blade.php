@@ -748,6 +748,7 @@
         updateDocumentRequirements();
     });
 </script>
+@endsection
 
 @push('styles')
 <style>
@@ -786,5 +787,3 @@
     }
 </style>
 @endpush
-
-@endsection
