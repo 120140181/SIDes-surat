@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PengajuanSurat extends Model
 {
@@ -42,6 +43,40 @@ class PengajuanSurat extends Model
         'tanggal_lahir' => 'date',
         'data_persyaratan' => 'array',
     ];
+
+    /**
+     * Boot the model and register events.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Auto-delete files saat record dihapus
+        static::deleting(function ($pengajuan) {
+            // Delete files dari data_persyaratan (JSON)
+            if ($pengajuan->data_persyaratan && is_array($pengajuan->data_persyaratan)) {
+                foreach ($pengajuan->data_persyaratan as $filePath) {
+                    if (is_string($filePath) && Storage::disk('public')->exists($filePath)) {
+                        Storage::disk('public')->delete($filePath);
+                    }
+                }
+            }
+
+            // Delete dokumen fields lama (backward compatibility)
+            $documentFields = [
+                'dokumen_kk', 'dokumen_ktp', 'dokumen_foto_usaha', 'dokumen_foto_rumah',
+                'dokumen_pas_photo', 'dokumen_ktp_ortu', 'dokumen_ktp_ortu2',
+                'dokumen_surat_lahir', 'dokumen_buku_nikah', 'dokumen_ktp_bersangkutan',
+                'dokumen_surat_rekomendasi'
+            ];
+
+            foreach ($documentFields as $field) {
+                if ($pengajuan->$field && Storage::disk('public')->exists($pengajuan->$field)) {
+                    Storage::disk('public')->delete($pengajuan->$field);
+                }
+            }
+        });
+    }
 
     // Relasi dengan user
     public function user()
