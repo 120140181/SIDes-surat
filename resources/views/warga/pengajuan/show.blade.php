@@ -124,6 +124,10 @@
         color: #4a5568;
         line-height: 1.8;
         font-size: 1rem;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
     }
 
     .keterangan-box {
@@ -146,6 +150,10 @@
         color: #1e3a8a;
         line-height: 1.8;
         font-size: 1rem;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
     }
 
     .btn-back-modern {

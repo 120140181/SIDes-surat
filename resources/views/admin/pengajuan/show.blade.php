@@ -123,6 +123,10 @@
         color: #4a5568;
         line-height: 1.8;
         font-size: 0.95rem;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
     }
 
     .keterangan-box {
@@ -147,6 +151,10 @@
         color: #1e3a8a;
         line-height: 1.8;
         font-size: 0.95rem;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
     }
 
     /* Update Status Card */
@@ -631,12 +639,12 @@
                                     <span>{{ $doc['label'] }}</span>
                                 </div>
                                 <div class="document-actions">
-                                    <a href="{{ asset('storage/' . $pengajuan->{$doc['field']}) }}"
+                                    <a href="{{ Storage::url($pengajuan->{$doc['field']}) }}"
                                        target="_blank"
                                        class="btn-view-doc">
                                         <i class="fas fa-eye"></i> Lihat
                                     </a>
-                                    <a href="{{ asset('storage/' . $pengajuan->{$doc['field']}) }}"
+                                    <a href="{{ Storage::url($pengajuan->{$doc['field']}) }}"
                                        download
                                        class="btn-download-doc">
                                         <i class="fas fa-download"></i> Download
