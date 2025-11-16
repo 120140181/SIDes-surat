@@ -748,4 +748,4 @@
         updateDocumentRequirements();
     });
 </script>
-@endsection
+@endpush
