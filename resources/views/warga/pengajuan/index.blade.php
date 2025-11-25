@@ -127,12 +127,18 @@
         gap: 6px;
     }
 
-    .badge-modern.badge-idle {
+    .badge-modern.badge-menunggu {
         background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-        color: #d63031;
+        color: #2d3436;
     }
 
-    .badge-modern.badge-proses {
+    .badge-modern.badge-perbaikan {
+        background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+        color: white;
+    }
+
+    .badge-modern.badge-proses,
+    .badge-modern.badge-sedang_diproses {
         background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
         color: white;
     }
@@ -579,10 +585,18 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('warga.pengajuan.show', $item->id) }}"
-                                           class="btn btn-detail-modern btn-sm">
-                                            <i class="fas fa-eye"></i> Detail
-                                        </a>
+                                        <div class="d-flex gap-1 justify-content-center">
+                                            <a href="{{ route('warga.pengajuan.show', $item->id) }}"
+                                               class="btn btn-info btn-sm" style="border-radius: 8px;">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
+                                            @if($item->status === 'perbaikan_surat')
+                                            <a href="{{ route('warga.pengajuan.edit', $item->id) }}"
+                                               class="btn btn-warning btn-sm" style="border-radius: 8px; color: white;">
+                                                <i class="fas fa-edit"></i> Perbarui
+                                            </a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

@@ -88,12 +88,18 @@
         gap: 6px;
     }
 
-    .badge-modern.badge-idle {
+    .badge-modern.badge-menunggu {
         background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-        color: #d63031;
+        color: #2d3436;
     }
 
-    .badge-modern.badge-proses {
+    .badge-modern.badge-perbaikan {
+        background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+        color: white;
+    }
+
+    .badge-modern.badge-proses,
+    .badge-modern.badge-sedang_diproses {
         background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
         color: white;
     }
@@ -656,16 +662,9 @@
                         <i class="fas fa-file-alt"></i>
                         <span>Informasi Pengajuan</span>
                     </h3>
-                    <div class="d-flex gap-2">
-                        @if($pengajuan->status === 'idle')
-                        <a href="{{ route('warga.pengajuan.edit', $pengajuan->id) }}" class="btn btn-warning" style="border-radius: 10px; padding: 10px 18px; font-weight: 600; color: white;">
-                            <i class="fas fa-edit"></i> Perbarui Surat
-                        </a>
-                        @endif
-                        <a href="{{ route('warga.pengajuan.index') }}" class="btn btn-back-modern">
-                            <i class="fas fa-arrow-left"></i> Kembali
-                        </a>
-                    </div>
+                    <a href="{{ route('warga.pengajuan.index') }}" class="btn btn-back-modern">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
                 </div>
             </div>
             <div class="card-body">
@@ -683,10 +682,7 @@
                             <tr>
                                 <th><i class="fas fa-signal text-primary"></i> Status</th>
                                 <td>
-                                    <span class="badge-modern
-                                        @if($pengajuan->status == 'idle') badge-idle
-                                        @elseif($pengajuan->status == 'proses') badge-proses
-                                        @else badge-selesai @endif">
+                                    <span class="badge-modern {{ $pengajuan->status_badge_class }}">
                                         <i class="fas fa-circle" style="font-size: 6px;"></i>
                                         {{ $pengajuan->status_label }}
                                     </span>

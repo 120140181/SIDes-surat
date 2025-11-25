@@ -37,7 +37,7 @@ class PengajuanSuratController extends Controller
     public function updateStatus(Request $request, $id): RedirectResponse
     {
         $request->validate([
-            'status' => 'required|in:idle,proses,selesai',
+            'status' => 'required|in:menunggu,perbaikan_surat,sedang_diproses,selesai',
             'keterangan_admin' => 'nullable|string|max:500',
         ]);
 
@@ -48,8 +48,9 @@ class PengajuanSuratController extends Controller
         ]);
 
         $statusLabels = [
-            'idle' => 'Menunggu',
-            'proses' => 'Sedang Diproses',
+            'menunggu' => 'Menunggu Verifikasi',
+            'perbaikan_surat' => 'Perlu Perbaikan Dokumen',
+            'sedang_diproses' => 'Sedang Diproses',
             'selesai' => 'Selesai'
         ];
 

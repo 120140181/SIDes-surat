@@ -243,9 +243,9 @@ class PengajuanSuratController extends Controller
             ->where('user_id', $userId)
             ->findOrFail($id);
 
-        // Hanya bisa edit jika status masih idle
-        if ($pengajuan->status !== 'idle') {
-            abort(403, 'Pengajuan tidak dapat diubah karena sudah diproses.');
+        // Hanya bisa edit jika status perbaikan_surat
+        if ($pengajuan->status !== 'perbaikan_surat') {
+            abort(403, 'Pengajuan hanya dapat diubah saat status Perlu Perbaikan Dokumen.');
         }
 
         $jenisSurat = SuratJenis::with('persyaratan')->get();
@@ -257,10 +257,10 @@ class PengajuanSuratController extends Controller
         $userId = Auth::id();
         $pengajuan = PengajuanSurat::where('user_id', $userId)->findOrFail($id);
 
-        // Hanya bisa update jika status masih idle
-        if ($pengajuan->status !== 'idle') {
+        // Hanya bisa update jika status perbaikan_surat
+        if ($pengajuan->status !== 'perbaikan_surat') {
             return redirect()->back()
-                ->with('error', 'Pengajuan tidak dapat diubah karena sudah diproses.');
+                ->with('error', 'Pengajuan hanya dapat diubah saat status Perlu Perbaikan Dokumen.');
         }
 
         $rules = [
@@ -332,9 +332,11 @@ class PengajuanSuratController extends Controller
             'surat_jenis_id' => $request->surat_jenis_id,
             'keperluan' => $request->keperluan,
             'data_persyaratan' => $dataPersyaratan,
+            'status' => 'menunggu', // Kembali ke menunggu setelah diperbaiki
+            'keterangan_admin' => null, // Reset keterangan
         ]);
 
         return redirect()->route('warga.pengajuan.show', $id)
-            ->with('success', 'Pengajuan surat berhasil diperbarui!');
+            ->with('success', 'Pengajuan surat berhasil diperbaharui dan akan diverifikasi ulang oleh admin.');
     }
 }

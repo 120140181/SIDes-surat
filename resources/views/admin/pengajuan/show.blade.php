@@ -86,18 +86,24 @@
         gap: 5px;
     }
 
-    .badge-idle {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    .badge-menunggu {
+        background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        color: #2d3436;
+    }
+
+    .badge-perbaikan {
+        background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
         color: white;
     }
 
-    .badge-proses {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    .badge-proses,
+    .badge-sedang_diproses {
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
         color: white;
     }
 
     .badge-selesai {
-        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
         color: white;
     }
 
@@ -445,9 +451,62 @@
         }
 
         .btn-update,
-        .btn-back-modern {
+        .btn-back-modern,
+        .btn-delete-pengajuan {
             width: 100%;
             margin-bottom: 10px;
+        }
+
+        .badge-modern {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .detail-card .card-header,
+        .update-card .card-header,
+        .warga-card .card-header {
+            padding: 15px;
+        }
+
+        .detail-card .card-header h3,
+        .update-card .card-header h3,
+        .warga-card .card-header h3 {
+            font-size: 1rem;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 10px;
+            font-size: 0.75rem;
+        }
+
+        .keperluan-box,
+        .keterangan-box {
+            padding: 12px;
+            font-size: 0.8rem;
+        }
+
+        .badge-modern {
+            padding: 5px 10px;
+            font-size: 0.7rem;
+        }
+
+        .btn-view-doc,
+        .btn-download-doc {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+
+        .header-with-back {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-with-back .d-flex {
+            width: 100%;
+            flex-direction: column;
         }
     }
 </style>
@@ -463,14 +522,9 @@
                     <i class="fas fa-file-alt"></i>
                     Detail Pengajuan Surat
                 </h3>
-                <div class="d-flex gap-2">
-                    <button onclick="confirmDelete()" class="btn btn-danger" style="border-radius: 10px; padding: 10px 18px; font-weight: 600; margin-right: 10px;">
-                        <i class="fas fa-trash"></i> Hapus
-                    </button>
-                    <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
-                </div>
+                <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
             </div>
         </div>
     </div>
@@ -499,19 +553,17 @@
                             <tr>
                                 <th><i class="fas fa-info-circle text-warning"></i> Status</th>
                                 <td>
-                                    @if($pengajuan->status === 'idle')
-                                        <span class="badge-modern badge-idle">
-                                            <i class="fas fa-clock"></i> Menunggu Persetujuan
-                                        </span>
-                                    @elseif($pengajuan->status === 'proses')
-                                        <span class="badge-modern badge-proses">
-                                            <i class="fas fa-spinner fa-spin"></i> Sedang Diproses
-                                        </span>
-                                    @else
-                                        <span class="badge-modern badge-selesai">
-                                            <i class="fas fa-check-circle"></i> Selesai
-                                        </span>
-                                    @endif
+                                    <span class="badge-modern {{ $pengajuan->status_badge_class }}">
+                                        @if($pengajuan->status === 'menunggu')
+                                            <i class="fas fa-clock"></i> {{ $pengajuan->status_label }}
+                                        @elseif($pengajuan->status === 'perbaikan_surat')
+                                            <i class="fas fa-exclamation-triangle"></i> {{ $pengajuan->status_label }}
+                                        @elseif($pengajuan->status === 'sedang_diproses')
+                                            <i class="fas fa-spinner fa-spin"></i> {{ $pengajuan->status_label }}
+                                        @else
+                                            <i class="fas fa-check-circle"></i> {{ $pengajuan->status_label }}
+                                        @endif
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
@@ -706,9 +758,10 @@
                                         <i class="fas fa-toggle-on"></i> Status
                                     </label>
                                     <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
-                                        <option value="idle" {{ $pengajuan->status === 'idle' ? 'selected' : '' }}>⏳ Menunggu Persetujuan</option>
-                                        <option value="proses" {{ $pengajuan->status === 'proses' ? 'selected' : '' }}>🔄 Sedang Diproses</option>
-                                        <option value="selesai" {{ $pengajuan->status === 'selesai' ? 'selected' : '' }}>✅ Selesai</option>
+                                        <option value="menunggu" {{ $pengajuan->status === 'menunggu' ? 'selected' : '' }}>⏳ Menunggu Verifikasi</option>
+                                        <option value="perbaikan_surat" {{ $pengajuan->status === 'perbaikan_surat' ? 'selected' : '' }}>⚠️ Perlu Perbaikan Dokumen</option>
+                                        <option value="sedang_diproses" {{ $pengajuan->status === 'sedang_diproses' ? 'selected' : '' }}>🔄 Sedang Diproses</option>
+                                        <option value="selesai" {{ $pengajuan->status === 'selesai' ? 'selected' : '' }}>✅ Selesai - Dapat Diambil</option>
                                     </select>
                                     @error('status')
                                         <span class="invalid-feedback" role="alert">

@@ -94,11 +94,25 @@ class PengajuanSurat extends Model
     public function getStatusLabelAttribute()
     {
         $statusLabels = [
-            'idle' => 'Menunggu',
-            'proses' => 'Sedang Diproses',
+            'menunggu' => 'Menunggu Verifikasi',
+            'perbaikan_surat' => 'Perlu Perbaikan Dokumen',
+            'sedang_diproses' => 'Sedang Diproses',
             'selesai' => 'Selesai - Dapat Diambil'
         ];
 
         return $statusLabels[$this->status] ?? $this->status;
+    }
+
+    // Accessor untuk badge class berdasarkan status
+    public function getStatusBadgeClassAttribute()
+    {
+        $badgeClasses = [
+            'menunggu' => 'badge-menunggu',
+            'perbaikan_surat' => 'badge-perbaikan',
+            'sedang_diproses' => 'badge-proses',
+            'selesai' => 'badge-selesai'
+        ];
+
+        return $badgeClasses[$this->status] ?? 'badge-secondary';
     }
 }

@@ -332,6 +332,38 @@
         .detail-table td {
             font-size: 0.85rem;
         }
+
+        .btn-back-modern,
+        .btn-danger {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .detail-card .card-header {
+            padding: 15px;
+        }
+
+        .detail-card .card-header h3 {
+            font-size: 1rem;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 10px;
+            font-size: 0.75rem;
+        }
+
+        .header-with-back {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-with-back .d-flex {
+            width: 100%;
+            flex-direction: column;
+        }
     }
 </style>
 @endpush
@@ -346,14 +378,9 @@
                     <i class="fas fa-user-circle"></i>
                     Detail Data Warga
                 </h3>
-                <div class="d-flex gap-2">
-                    <button onclick="confirmDelete()" class="btn btn-danger" style="border-radius: 10px; padding: 10px 18px; font-weight: 600;">
-                        <i class="fas fa-trash"></i> Hapus Warga
-                    </button>
-                    <a href="{{ route('admin.data.warga') }}" class="btn btn-back-modern">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
-                </div>
+                <a href="{{ route('admin.data.warga') }}" class="btn btn-back-modern">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
             </div>
         </div>
     </div>

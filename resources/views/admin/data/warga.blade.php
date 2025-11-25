@@ -414,10 +414,21 @@
                                         </td>
                                         <td>{{ $item->created_at->format('d/m/Y') }}</td>
                                         <td>
-                                            <a href="{{ route('admin.data.warga-show', $item->id) }}"
-                                               class="btn btn-detail-modern">
-                                                <i class="fas fa-eye"></i> Detail
-                                            </a>
+                                            <div class="d-flex gap-1">
+                                                <a href="{{ route('admin.data.warga-show', $item->id) }}"
+                                                   class="btn btn-info btn-sm" style="border-radius: 8px;">
+                                                    <i class="fas fa-eye"></i> Detail
+                                                </a>
+                                                <form action="{{ route('admin.data.warga.destroy', $item->id) }}" method="POST"
+                                                      onsubmit="return confirm('Yakin hapus warga {{ $item->nama_lengkap }}? Pastikan tidak ada pengajuan surat aktif!');"
+                                                      style="display: inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px;">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach

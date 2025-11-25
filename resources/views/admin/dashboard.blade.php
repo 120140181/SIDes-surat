@@ -564,6 +564,36 @@
             margin-top: 15px;
         }
     }
+
+    @media (max-width: 400px) {
+        .stats-card {
+            padding: 15px;
+        }
+
+        .stats-card .card-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .stats-card .card-number {
+            font-size: 1.5rem;
+        }
+
+        .stats-card .card-label {
+            font-size: 0.75rem;
+        }
+
+        .modern-table thead th {
+            padding: 8px 10px;
+            font-size: 0.7rem;
+        }
+
+        .modern-table tbody td {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+    }
 </style>
 @endpush
 

@@ -269,6 +269,31 @@
             display: none;
         }
     }
+
+    @media (max-width: 400px) {
+        .modern-card .card-header {
+            padding: 15px;
+        }
+
+        .modern-card .card-header h3 {
+            font-size: 1rem;
+        }
+
+        .modern-table thead th {
+            padding: 8px;
+            font-size: 0.7rem;
+        }
+
+        .modern-table tbody td {
+            padding: 8px;
+            font-size: 0.75rem;
+        }
+
+        .btn-action {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+    }
 </style>
 @endpush
 

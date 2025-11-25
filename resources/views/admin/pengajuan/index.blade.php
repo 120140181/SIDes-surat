@@ -122,9 +122,10 @@
         gap: 5px;
     }
 
-    .badge-idle { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; }
-    .badge-proses { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
-    .badge-selesai { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }
+    .badge-menunggu { background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); color: #2d3436; }
+    .badge-perbaikan { background: linear-gradient(135deg, #ff7675 0%, #d63031 100%); color: white; }
+    .badge-proses, .badge-sedang_diproses { background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white; }
+    .badge-selesai { background: linear-gradient(135deg, #55efc4 0%, #00b894 100%); color: white; }
 
     .btn-detail-modern {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -231,8 +232,9 @@
                 <div class="card-tools">
                     <select class="filter-select" onchange="window.location.href='?status='+this.value">
                         <option value="">📋 Semua Status</option>
-                        <option value="idle" {{ request('status') == 'idle' ? 'selected' : '' }}>⏳ Menunggu</option>
-                        <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>🔄 Dalam Proses</option>
+                        <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>⏳ Menunggu Verifikasi</option>
+                        <option value="perbaikan_surat" {{ request('status') == 'perbaikan_surat' ? 'selected' : '' }}>⚠️ Perlu Perbaikan</option>
+                        <option value="sedang_diproses" {{ request('status') == 'sedang_diproses' ? 'selected' : '' }}>🔄 Sedang Diproses</option>
                         <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>✅ Selesai</option>
                     </select>
                 </div>
@@ -276,10 +278,7 @@
                                         <small style="color: #9ca3af;">{{ $item->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>
-                                        <span class="badge-modern
-                                            @if($item->status == 'idle') badge-idle
-                                            @elseif($item->status == 'proses') badge-proses
-                                            @else badge-selesai @endif">
+                                        <span class="badge-modern {{ $item->status_badge_class }}">
                                             <i class="fas fa-circle" style="font-size: 6px;"></i>
                                             {{ $item->status_label }}
                                         </span>
@@ -291,10 +290,21 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.pengajuan.show', $item->id) }}"
-                                           class="btn-detail-modern">
-                                            <i class="fas fa-eye"></i> Detail
-                                        </a>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('admin.pengajuan.show', $item->id) }}"
+                                               class="btn-detail-modern btn-sm">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
+                                            <form action="{{ route('admin.pengajuan.destroy', $item->id) }}" method="POST"
+                                                  onsubmit="return confirm('Yakin hapus pengajuan #{{ $item->id }} dari {{ $item->user->nama_lengkap }}? Semua dokumen akan dihapus!');"
+                                                  style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 6px 12px;">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
