@@ -1,5 +1,41 @@
 # 🚀 Deployment Guide - SIDes Surat
 
+## ⚡ QUICK FIX - Tanpa Terminal/SSH
+
+**Jika terminal Sevalla tidak bisa diakses:**
+
+### Gunakan Setup Web Utility
+
+1. **Upload file `setup.php`**
+   - File ada di: `public/setup.php`
+   - Upload via FTP/File Manager Sevalla ke folder `public/`
+
+2. **Akses via browser:**
+   ```
+   https://domain-anda.sevalla.app/setup.php
+   ```
+
+3. **Login dengan password:**
+   ```
+   Password default: sides2025
+   ```
+   *(Edit file setup.php untuk ganti password)*
+
+4. **Klik: "⚡ Jalankan Semua"**
+   - Auto create folders
+   - Auto create symlink
+   - Auto fix permissions
+   - Auto clear cache
+
+5. **✅ Test upload dokumen baru**
+
+6. **🔒 HAPUS `setup.php` setelah selesai!**
+   ```
+   Hapus via File Manager: public/setup.php
+   ```
+
+---
+
 ## Deployment ke Production (Sevalla)
 
 ### 1️⃣ Update Code dari GitHub
