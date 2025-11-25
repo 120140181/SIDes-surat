@@ -235,4 +235,106 @@ class PengajuanSuratController extends Controller
 
         return view('warga.pengajuan.show', compact('pengajuan'));
     }
+
+    public function edit($id): View
+    {
+        $userId = Auth::id();
+        $pengajuan = PengajuanSurat::with(['suratJenis.persyaratan'])
+            ->where('user_id', $userId)
+            ->findOrFail($id);
+
+        // Hanya bisa edit jika status masih idle
+        if ($pengajuan->status !== 'idle') {
+            abort(403, 'Pengajuan tidak dapat diubah karena sudah diproses.');
+        }
+
+        $jenisSurat = SuratJenis::with('persyaratan')->get();
+        return view('warga.pengajuan.edit', compact('pengajuan', 'jenisSurat'));
+    }
+
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $userId = Auth::id();
+        $pengajuan = PengajuanSurat::where('user_id', $userId)->findOrFail($id);
+
+        // Hanya bisa update jika status masih idle
+        if ($pengajuan->status !== 'idle') {
+            return redirect()->back()
+                ->with('error', 'Pengajuan tidak dapat diubah karena sudah diproses.');
+        }
+
+        $rules = [
+            'surat_jenis_id' => 'required|exists:surat_jenis,id',
+            'keperluan' => 'required|string|min:10|max:1000',
+        ];
+
+        // Get jenis surat dengan persyaratan
+        $jenisSurat = SuratJenis::with('persyaratan')->find($request->surat_jenis_id);
+
+        // Validasi persyaratan dinamis
+        foreach ($jenisSurat->persyaratan as $persyaratan) {
+            $fieldName = 'persyaratan_' . $persyaratan->id;
+
+            if ($persyaratan->wajib) {
+                if ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image') {
+                    $mimes = $persyaratan->tipe === 'image' ? 'jpeg,jpg,png' : 'jpeg,jpg,png,pdf';
+                    $rules[$fieldName] = "nullable|file|mimes:{$mimes}|max:2048";
+                } elseif ($persyaratan->tipe === 'date') {
+                    $rules[$fieldName] = 'nullable|date';
+                } else {
+                    $rules[$fieldName] = 'nullable|string|max:1000';
+                }
+            } else {
+                if ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image') {
+                    $mimes = $persyaratan->tipe === 'image' ? 'jpeg,jpg,png' : 'jpeg,jpg,png,pdf';
+                    $rules[$fieldName] = "nullable|file|mimes:{$mimes}|max:2048";
+                } elseif ($persyaratan->tipe === 'date') {
+                    $rules[$fieldName] = 'nullable|date';
+                } else {
+                    $rules[$fieldName] = 'nullable|string|max:1000';
+                }
+            }
+        }
+
+        $validated = $request->validate($rules);
+
+        // Get data persyaratan lama
+        $dataPersyaratan = $pengajuan->data_persyaratan ?? [];
+
+        // Handle persyaratan uploads dan update JSON
+        foreach ($jenisSurat->persyaratan as $persyaratan) {
+            $fieldName = 'persyaratan_' . $persyaratan->id;
+
+            if ($request->has($fieldName) || $request->hasFile($fieldName)) {
+                if ($persyaratan->tipe === 'file' || $persyaratan->tipe === 'image') {
+                    if ($request->hasFile($fieldName)) {
+                        // Hapus file lama jika ada
+                        if (isset($dataPersyaratan[$persyaratan->kode]) && \Storage::disk('public')->exists($dataPersyaratan[$persyaratan->kode])) {
+                            \Storage::disk('public')->delete($dataPersyaratan[$persyaratan->kode]);
+                        }
+
+                        // Upload file baru
+                        $file = $request->file($fieldName);
+                        $timestamp = time();
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = "persyaratan_{$persyaratan->id}_{$userId}_{$timestamp}.{$extension}";
+                        $file->storeAs('dokumen_pengajuan', $filename, 'public');
+                        $dataPersyaratan[$persyaratan->kode] = "dokumen_pengajuan/{$filename}";
+                    }
+                } else {
+                    $dataPersyaratan[$persyaratan->kode] = $request->input($fieldName);
+                }
+            }
+        }
+
+        // Update pengajuan
+        $pengajuan->update([
+            'surat_jenis_id' => $request->surat_jenis_id,
+            'keperluan' => $request->keperluan,
+            'data_persyaratan' => $dataPersyaratan,
+        ]);
+
+        return redirect()->route('warga.pengajuan.show', $id)
+            ->with('success', 'Pengajuan surat berhasil diperbarui!');
+    }
 }

@@ -52,6 +52,8 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             Route::get('/buat', [WargaPengajuanSuratController::class, 'create'])->name('create');
             Route::post('/buat', [WargaPengajuanSuratController::class, 'store'])->name('store');
             Route::get('/{id}', [WargaPengajuanSuratController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [WargaPengajuanSuratController::class, 'edit'])->name('edit');
+            Route::put('/{id}/update', [WargaPengajuanSuratController::class, 'update'])->name('update');
         });
 
         // Profile Routes

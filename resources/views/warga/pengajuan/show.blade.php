@@ -656,9 +656,16 @@
                         <i class="fas fa-file-alt"></i>
                         <span>Informasi Pengajuan</span>
                     </h3>
-                    <a href="{{ route('warga.pengajuan.index') }}" class="btn btn-back-modern">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
+                    <div class="d-flex gap-2">
+                        @if($pengajuan->status === 'idle')
+                        <a href="{{ route('warga.pengajuan.edit', $pengajuan->id) }}" class="btn btn-warning" style="border-radius: 10px; padding: 10px 18px; font-weight: 600; color: white;">
+                            <i class="fas fa-edit"></i> Perbarui Surat
+                        </a>
+                        @endif
+                        <a href="{{ route('warga.pengajuan.index') }}" class="btn btn-back-modern">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="card-body">

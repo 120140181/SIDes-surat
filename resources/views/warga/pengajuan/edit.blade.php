@@ -1,0 +1,772 @@
+{{-- resources/views/warga/pengajuan/edit.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Perbarui Pengajuan Surat')
+@section('page_title', 'Perbarui Pengajuan Surat')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('warga.dashboard') }}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('warga.pengajuan.index') }}">Pengajuan Surat</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('warga.pengajuan.show', $pengajuan->id) }}">Detail</a></li>
+    <li class="breadcrumb-item active">Perbarui</li>
+@endsection
+
+@section('active-pengajuan', 'active')
+
+@push('styles')
+<style>
+    /* Modern Form Card */
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        overflow: hidden;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border: none;
+    }
+
+    .form-card .card-header h3 {
+        color: white;
+        margin: 0;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .form-card .card-body {
+        padding: 30px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        height: auto;
+        min-height: 48px;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    select.form-control {
+        padding: 12px 16px;
+        line-height: 1.5;
+    }
+
+    select.form-control option {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-back {
+        background: white;
+        color: #718096;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        border-color: #cbd5e0;
+        color: #4a5568;
+        background: #f7fafc;
+    }
+
+    /* Info Card */
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .info-card .card-header {
+        background: #f7fafc;
+        padding: 20px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .info-card .card-header h3 {
+        color: #2d3748;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .info-alert {
+        background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+        border-left: 4px solid #667eea;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .info-alert h6 {
+        color: #1e40af;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-alert ol,
+    .info-alert ul {
+        color: #1e3a8a;
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .info-alert li {
+        margin-bottom: 8px;
+    }
+
+    .time-alert {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-left: 4px solid #f59e0b;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .time-alert h6 {
+        color: #92400e;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .time-alert ul {
+        color: #78350f;
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .time-alert li {
+        margin-bottom: 8px;
+    }
+
+    .badge-status {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    /* ========================================
+       RESPONSIVE DESIGN - MOBILE FIRST
+       ======================================== */
+
+    /* Tablet Landscape - 992px and below */
+    @media (max-width: 992px) {
+        .form-card .card-header h3,
+        .info-card .card-header h3 {
+            font-size: 1.3rem;
+        }
+
+        .form-card .card-body,
+        .info-card .card-body {
+            padding: 25px;
+        }
+
+        .form-card .card-footer {
+            padding: 18px 25px !important;
+        }
+    }
+
+    /* Tablet Portrait / Large Phone - 768px and below */
+    @media (max-width: 768px) {
+        .form-card .card-header h3,
+        .info-card .card-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .form-card .card-header h3 i,
+        .info-card .card-header h3 i {
+            font-size: 1rem;
+        }
+
+        .form-card .card-body,
+        .info-card .card-body {
+            padding: 20px;
+        }
+
+        .form-card .card-footer {
+            padding: 15px 20px !important;
+        }
+
+        /* Form Controls */
+        .form-group label {
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+            padding: 10px 14px;
+        }
+
+        select.form-control {
+            padding: 10px 14px;
+        }
+
+        .form-text {
+            font-size: 0.85rem;
+        }
+
+        /* Buttons */
+        .btn-submit,
+        .btn-back {
+            width: 48%;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Info Sidebar */
+        .info-card {
+            margin-top: 20px;
+        }
+
+        .info-alert h6,
+        .time-alert h6 {
+            font-size: 0.95rem;
+        }
+
+        .info-alert ol,
+        .time-alert ul {
+            font-size: 0.85rem;
+        }
+
+        .info-alert ol li,
+        .time-alert ul li {
+            margin-bottom: 6px;
+        }
+    }
+
+    /* Mobile Phone - 576px and below */
+    @media (max-width: 576px) {
+        .form-card .card-header,
+        .info-card .card-header {
+            padding: 15px;
+        }
+
+        .form-card .card-header h3,
+        .info-card .card-header h3 {
+            font-size: 1.05rem;
+        }
+
+        .form-card .card-header h3 i,
+        .info-card .card-header h3 i {
+            display: none; /* Hide icons on mobile */
+        }
+
+        .form-card .card-body,
+        .info-card .card-body {
+            padding: 15px;
+        }
+
+        .form-card .card-footer {
+            padding: 12px 15px !important;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .form-group label i {
+            display: none; /* Hide label icons on mobile */
+        }
+
+        .form-control {
+            font-size: 0.85rem;
+            padding: 10px 12px;
+            min-height: 44px;
+        }
+
+        select.form-control {
+            padding: 10px 12px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+        }
+
+        .form-text i {
+            display: none;
+        }
+
+        /* Buttons Full Width */
+        .btn-submit,
+        .btn-back {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+        }
+
+        /* Info Cards */
+        .info-card {
+            margin-top: 15px;
+        }
+
+        .info-alert,
+        .time-alert {
+            padding: 12px;
+        }
+
+        .info-alert h6,
+        .time-alert h6 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .info-alert h6 i,
+        .time-alert h6 i {
+            font-size: 0.85rem;
+        }
+
+        .info-alert ol,
+        .time-alert ul {
+            font-size: 0.82rem;
+            padding-left: 18px;
+        }
+
+        .info-alert ol li,
+        .time-alert ul li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+
+        .badge-status {
+            padding: 3px 10px;
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Extra Small Devices - 400px and below */
+    @media (max-width: 400px) {
+        .form-card .card-header h3,
+        .info-card .card-header h3 {
+            font-size: 0.95rem;
+        }
+
+        .form-card .card-body,
+        .info-card .card-body {
+            padding: 12px;
+        }
+
+        .form-card .card-footer {
+            padding: 10px 12px !important;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+        }
+
+        .form-control {
+            font-size: 0.8rem;
+            padding: 8px 10px;
+        }
+
+        .btn-submit,
+        .btn-back {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .info-alert,
+        .time-alert {
+            padding: 10px;
+        }
+
+        .info-alert h6,
+        .time-alert h6 {
+            font-size: 0.85rem;
+        }
+
+        .info-alert ol,
+        .time-alert ul {
+            font-size: 0.78rem;
+        }
+    }
+</style>
+@endpush
+
+@section('content')
+<div class="row">
+    <div class="col-md-8">
+        <div class="card form-card">
+            <div class="card-header">
+                <h3>
+                    <i class="fas fa-edit"></i>
+                    <span>Perbarui Pengajuan Surat</span>
+                </h3>
+            </div>
+            <form method="POST" action="{{ route('warga.pengajuan.update', $pengajuan->id) }}" id="formPengajuan" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="surat_jenis_id">
+                            <i class="fas fa-file-alt text-primary"></i>
+                            Jenis Surat <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control @error('surat_jenis_id') is-invalid @enderror"
+                                id="surat_jenis_id" name="surat_jenis_id" required onchange="updateDocumentRequirements()">
+                            <option value="">-- Pilih Jenis Surat --</option>
+                            @foreach($jenisSurat as $jenis)
+                                <option value="{{ $jenis->id }}" data-nama="{{ strtolower($jenis->nama) }}"
+                                    {{ old('surat_jenis_id', $pengajuan->surat_jenis_id) == $jenis->id ? 'selected' : '' }}>
+                                    {{ $jenis->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('surat_jenis_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="keperluan">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            Keperluan / Alasan Pengajuan <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control @error('keperluan') is-invalid @enderror"
+                                  id="keperluan" name="keperluan" rows="6"
+                                  placeholder="Jelaskan keperluan dan alasan pengajuan surat ini dengan detail..."
+                                  required>{{ old('keperluan', $pengajuan->keperluan) }}</textarea>
+                        @error('keperluan')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                        <small class="form-text text-muted">
+                            <i class="fas fa-lightbulb"></i> Minimal 10 karakter. Jelaskan secara detail untuk mempermudah proses verifikasi.
+                        </small>
+                    </div>
+
+                    <!-- Dokumen Requirements - Dynamic based on Jenis Surat -->
+                    <div id="documentSection" style="display: none;">
+                        <hr style="margin: 30px 0; border-top: 2px solid #e2e8f0;">
+                        <h5 style="color: #2d3748; font-weight: 700; margin-bottom: 20px;">
+                            <i class="fas fa-paperclip"></i> Upload Dokumen Persyaratan
+                        </h5>
+
+                        <div id="persyaratanContainer">
+                            <!-- Field persyaratan akan di-generate di sini oleh JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer" style="background: #f7fafc; padding: 20px 30px;">
+                    <button type="button" class="btn btn-submit" onclick="confirmSubmit()">
+                        <i class="fas fa-save"></i> Perbarui Pengajuan
+                    </button>
+                    <a href="{{ route('warga.pengajuan.show', $pengajuan->id) }}" class="btn btn-back">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card info-card">
+            <div class="card-header">
+                <h3><i class="fas fa-info-circle"></i> Informasi Penting</h3>
+            </div>
+            <div class="card-body">
+                <div class="info-alert">
+                    <h6><i class="fas fa-info-circle"></i> Informasi Perbarui:</h6>
+                    <ol>
+                        <li>Anda dapat mengubah jenis surat dan keperluan</li>
+                        <li>Upload file baru akan mengganti file lama</li>
+                        <li>File yang tidak diubah tetap digunakan</li>
+                        <li>Status akan tetap: <span class="badge badge-warning badge-status">Menunggu</span></li>
+                        <li>Pengajuan hanya bisa diubah saat status Menunggu</li>
+                    </ol>
+                </div>
+
+                <div class="time-alert">
+                    <h6><i class="fas fa-clock"></i> Estimasi Waktu Proses:</h6>
+                    <ul>
+                        <li><strong>Verifikasi:</strong> 1-2 hari kerja</li>
+                        <li><strong>Pembuatan surat:</strong> 2-3 hari kerja</li>
+                        <li><strong>Total estimasi:</strong> 3-5 hari kerja</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+    // Data persyaratan dari backend
+    const persyaratanData = @json($jenisSurat->mapWithKeys(function($jenis) {
+        return [$jenis->id => $jenis->persyaratan];
+    }));
+
+    function updateDocumentRequirements() {
+        const select = document.getElementById('surat_jenis_id');
+        const jenisId = select.value;
+        const container = document.getElementById('persyaratanContainer');
+        const documentSection = document.getElementById('documentSection');
+
+        // Clear container
+        container.innerHTML = '';
+
+        if (!jenisId || !persyaratanData[jenisId] || persyaratanData[jenisId].length === 0) {
+            documentSection.style.display = 'none';
+            return;
+        }
+
+        // Show document section
+        documentSection.style.display = 'block';
+
+        // Generate fields
+        const persyaratan = persyaratanData[jenisId];
+        persyaratan.forEach(item => {
+            const fieldHtml = generateField(item);
+            container.innerHTML += fieldHtml;
+        });
+    }
+
+    function generateField(persyaratan) {
+        const fieldName = `persyaratan_${persyaratan.id}`;
+        const required = persyaratan.wajib ? ' <span class="text-danger">*</span>' : '';
+        const requiredAttr = persyaratan.wajib ? 'required' : '';
+
+        let inputHtml = '';
+        let iconClass = 'fas fa-file';
+        let keterangan = persyaratan.keterangan || '';
+
+        if (persyaratan.tipe === 'file' || persyaratan.tipe === 'image') {
+            iconClass = persyaratan.tipe === 'image' ? 'fas fa-image' : 'fas fa-file-upload';
+            const accept = persyaratan.tipe === 'image' ? 'image/*' : 'image/*,.pdf';
+            const format = persyaratan.tipe === 'image' ? 'JPG, PNG' : 'JPG, PNG, PDF';
+
+            inputHtml = `
+                <input type="file" class="form-control-file" id="${fieldName}" name="${fieldName}"
+                       accept="${accept}" ${requiredAttr}>
+                <small class="form-text text-muted">
+                    <i class="fas fa-info-circle"></i> Format: ${format} (Max: 2MB)${keterangan ? ' - ' + keterangan : ''}
+                </small>
+            `;
+        } else if (persyaratan.tipe === 'date') {
+            iconClass = 'fas fa-calendar-alt';
+            inputHtml = `
+                <input type="date" class="form-control" id="${fieldName}" name="${fieldName}" ${requiredAttr}>
+                ${keterangan ? `<small class="form-text text-muted"><i class="fas fa-info-circle"></i> ${keterangan}</small>` : ''}
+            `;
+        } else if (persyaratan.tipe === 'textarea') {
+            iconClass = 'fas fa-align-left';
+            inputHtml = `
+                <textarea class="form-control" id="${fieldName}" name="${fieldName}" rows="3"
+                          placeholder="${keterangan || 'Masukkan ' + persyaratan.nama}" ${requiredAttr}></textarea>
+                ${keterangan ? `<small class="form-text text-muted"><i class="fas fa-info-circle"></i> ${keterangan}</small>` : ''}
+            `;
+        } else {
+            iconClass = 'fas fa-keyboard';
+            inputHtml = `
+                <input type="text" class="form-control" id="${fieldName}" name="${fieldName}"
+                       placeholder="${keterangan || 'Masukkan ' + persyaratan.nama}" ${requiredAttr}>
+                ${keterangan ? `<small class="form-text text-muted"><i class="fas fa-info-circle"></i> ${keterangan}</small>` : ''}
+            `;
+        }
+
+        return `
+            <div class="form-group">
+                <label for="${fieldName}">
+                    <i class="${iconClass} text-info"></i>
+                    ${persyaratan.nama}${required}
+                </label>
+                ${inputHtml}
+            </div>
+        `;
+    }
+
+    function confirmSubmit() {
+        const jenisSurat = document.getElementById('surat_jenis_id');
+        const keperluan = document.getElementById('keperluan');
+
+        if (!jenisSurat.value) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Jenis Surat Belum Dipilih!',
+                text: 'Silakan pilih jenis surat terlebih dahulu.',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
+
+        if (!keperluan.value || keperluan.value.length < 10) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Keperluan Belum Diisi!',
+                text: 'Silakan isi keperluan minimal 10 karakter.',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
+
+        // Check required persyaratan
+        const documentSection = document.getElementById('documentSection');
+        if (documentSection.style.display !== 'none') {
+            const requiredInputs = documentSection.querySelectorAll('input[required], textarea[required]');
+            let missingDocs = [];
+
+            requiredInputs.forEach(input => {
+                if (input.type === 'file' && !input.files.length) {
+                    const label = input.previousElementSibling?.textContent.replace('*', '').trim() || 'Dokumen';
+                    missingDocs.push(label);
+                } else if (input.type !== 'file' && !input.value) {
+                    const label = input.previousElementSibling?.textContent.replace('*', '').trim() || 'Field';
+                    missingDocs.push(label);
+                }
+            });
+
+            if (missingDocs.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Persyaratan Belum Lengkap!',
+                    html: `<div style="text-align: left; padding: 10px;">
+                        <p>Persyaratan berikut masih belum dilengkapi:</p>
+                        <ul style="color: #e53e3e; font-weight: 600;">
+                            ${missingDocs.map(doc => `<li>${doc}</li>`).join('')}
+                        </ul>
+                    </div>`,
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+        }
+
+        Swal.fire({
+            title: 'Konfirmasi Perbarui Pengajuan',
+            html: `
+                <div style="text-align: left; padding: 10px 20px;">
+                    <p style="margin-bottom: 15px; color: #4a5568;">Apakah Anda yakin ingin memperbarui pengajuan surat dengan detail berikut?</p>
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #2d3748;">Jenis Surat:</strong><br>
+                        <span style="color: #667eea;">${jenisSurat.options[jenisSurat.selectedIndex].text}</span>
+                    </div>
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 8px;">
+                        <strong style="color: #2d3748;">Keperluan:</strong><br>
+                        <span style="color: #4a5568;">${keperluan.value.substring(0, 100)}${keperluan.value.length > 100 ? '...' : ''}</span>
+                    </div>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#667eea',
+            cancelButtonColor: '#cbd5e0',
+            confirmButtonText: '<i class="fas fa-check"></i> Ya, Perbarui',
+            cancelButtonText: '<i class="fas fa-times"></i> Batal',
+            customClass: {
+                popup: 'swal-wide'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Memperbarui Pengajuan...',
+                    html: 'Mohon tunggu sebentar, sedang memproses...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                document.getElementById('formPengajuan').submit();
+            }
+        });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDocumentRequirements();
+
+        // Pre-fill existing persyaratan data
+        const existingData = @json($pengajuan->data_persyaratan ?? []);
+
+        setTimeout(() => {
+            Object.keys(existingData).forEach(kode => {
+                const value = existingData[kode];
+                // Find input by persyaratan kode
+                const inputs = document.querySelectorAll('[name^="persyaratan_"]');
+                inputs.forEach(input => {
+                    const label = input.closest('.form-group')?.querySelector('label');
+                    if (label && label.textContent.toLowerCase().includes(kode.toLowerCase())) {
+                        if (input.type !== 'file') {
+                            input.value = value;
+                        }
+                    }
+                });
+            });
+        }, 300);
+    });
+</script>
+@endpush
