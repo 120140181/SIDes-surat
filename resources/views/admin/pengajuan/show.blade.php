@@ -642,17 +642,27 @@
                                         <span>{{ $persyaratan->nama }}</span>
                                     </div>
                                     @if($isFile)
+                                        @php
+                                            $fileExists = \Storage::disk('public')->exists($value);
+                                            $fileUrl = url('storage/' . $value);
+                                        @endphp
                                         <div class="document-actions">
-                                            <a href="{{ url('storage/' . $value) }}"
-                                               target="_blank"
-                                               class="btn-view-doc">
-                                                <i class="fas fa-eye"></i> Lihat
-                                            </a>
-                                            <a href="{{ url('storage/' . $value) }}"
-                                               download
-                                               class="btn-download-doc">
-                                                <i class="fas fa-download"></i> Download
-                                            </a>
+                                            @if($fileExists)
+                                                <a href="{{ $fileUrl }}"
+                                                   target="_blank"
+                                                   class="btn-view-doc">
+                                                    <i class="fas fa-eye"></i> Lihat
+                                                </a>
+                                                <a href="{{ $fileUrl }}"
+                                                   download
+                                                   class="btn-download-doc">
+                                                    <i class="fas fa-download"></i> Download
+                                                </a>
+                                            @else
+                                                <span class="text-danger" style="font-size: 0.85rem;">
+                                                    <i class="fas fa-exclamation-triangle"></i> File tidak ditemukan
+                                                </span>
+                                            @endif
                                         </div>
                                     @else
                                         <div class="text-muted" style="font-size: 0.9rem;">
