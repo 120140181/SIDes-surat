@@ -175,6 +175,9 @@ if (isset($_SESSION['setup_auth'])) {
                 <button type="submit" name="action" value="run_all" class="action-btn">
                     ⚡ Jalankan Semua
                 </button>
+                <button type="submit" name="action" value="delete_self" class="action-btn danger" onclick="return confirm('Yakin hapus setup.php? File ini akan dihapus permanen!')">
+                    🗑️ Hapus Setup.php
+                </button>
             </form>
 
             <?php
@@ -317,7 +320,23 @@ if (isset($_SESSION['setup_auth'])) {
                         $output[] = "";
                         $output[] = "📝 Langkah selanjutnya:";
                         $output[] = "1. Test upload dokumen baru via form pengajuan";
-                        $output[] = "2. Hapus file setup.php ini untuk keamanan";
+                        $output[] = "2. Klik tombol 'Hapus Setup.php' di bawah";
+                        break;
+
+                    case 'delete_self':
+                        $output[] = "🗑️ Menghapus setup.php...";
+                        $selfFile = __FILE__;
+                        if (unlink($selfFile)) {
+                            $output[] = "✅ File setup.php berhasil dihapus!";
+                            $output[] = "";
+                            $output[] = "🔒 Sistem sekarang aman.";
+                            $output[] = "";
+                            $output[] = "⚠️ Halaman ini akan error jika di-refresh (normal).";
+                            $output[] = "Silakan akses aplikasi utama Anda.";
+                        } else {
+                            $output[] = "❌ Gagal menghapus file.";
+                            $output[] = "Coba hapus manual via Git atau FTP.";
+                        }
                         break;
                 }
 
@@ -328,8 +347,7 @@ if (isset($_SESSION['setup_auth'])) {
 
             <div class="result warning" style="margin-top: 30px;">
                 <strong>⚠️ PENTING - Keamanan</strong><br><br>
-                Setelah setup selesai, HAPUS file ini dengan cara:<br>
-                <code>rm public/setup.php</code><br><br>
+                Setelah setup selesai, klik tombol <strong>"🗑️ Hapus Setup.php"</strong> di atas!<br><br>
                 File ini bisa diakses siapa saja dan berbahaya jika dibiarkan!
             </div>
 

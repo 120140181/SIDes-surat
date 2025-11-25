@@ -29,10 +29,9 @@
 
 5. **✅ Test upload dokumen baru**
 
-6. **🔒 HAPUS `setup.php` setelah selesai!**
-   ```
-   Hapus via File Manager: public/setup.php
-   ```
+6. **🗑️ Klik: "🗑️ Hapus Setup.php"**
+   - File akan menghapus dirinya sendiri
+   - Sistem jadi aman otomatis
 
 ---
 
