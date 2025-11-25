@@ -56,4 +56,17 @@ class PengajuanSuratController extends Controller
         return redirect()->route('admin.pengajuan.show', $id)
             ->with('success', "Status pengajuan berhasil diubah menjadi: {$statusLabels[$request->status]}");
     }
+
+    public function destroy($id): RedirectResponse
+    {
+        $pengajuan = PengajuanSurat::findOrFail($id);
+        $nomorPengajuan = $pengajuan->id;
+        $namaWarga = $pengajuan->user->nama_lengkap ?? 'Unknown';
+
+        // Delete akan trigger event di model untuk hapus files
+        $pengajuan->delete();
+
+        return redirect()->route('admin.pengajuan.index')
+            ->with('success', "Pengajuan #$nomorPengajuan dari $namaWarga berhasil dihapus beserta semua dokumennya.");
+    }
 }

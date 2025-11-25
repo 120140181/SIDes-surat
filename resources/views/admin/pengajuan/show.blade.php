@@ -463,9 +463,14 @@
                     <i class="fas fa-file-alt"></i>
                     Detail Pengajuan Surat
                 </h3>
-                <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
+                <div class="d-flex gap-2">
+                    <button onclick="confirmDelete()" class="btn btn-danger" style="border-radius: 10px; padding: 10px 18px; font-weight: 600;">
+                        <i class="fas fa-trash"></i> Hapus Pengajuan
+                    </button>
+                    <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -733,6 +738,13 @@
         </div>
     </div>
 </div>
+
+<!-- Form untuk delete (hidden) -->
+<form id="formDeletePengajuan" action="{{ route('admin.pengajuan.destroy', $pengajuan->id) }}" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
 @endsection
 
 @push('scripts')
@@ -762,6 +774,24 @@ function confirmUpdate() {
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('formUpdateStatus').submit();
+        }
+    });
+}
+
+function confirmDelete() {
+    Swal.fire({
+        title: 'Hapus Pengajuan Surat?',
+        html: '<div class="text-left"><p>Apakah Anda yakin ingin menghapus pengajuan ini?</p><p class="text-danger"><strong>Peringatan:</strong> Semua dokumen yang diupload juga akan dihapus secara permanen!</p></div>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times"></i> Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('formDeletePengajuan').submit();
         }
     });
 }

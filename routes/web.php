@@ -77,6 +77,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             Route::get('/', [AdminPengajuanSuratController::class, 'index'])->name('index');
             Route::get('/{id}', [AdminPengajuanSuratController::class, 'show'])->name('show');
             Route::post('/{id}/update-status', [AdminPengajuanSuratController::class, 'updateStatus'])->name('update-status');
+            Route::delete('/{id}/destroy', [AdminPengajuanSuratController::class, 'destroy'])->name('destroy');
         });
 
         // Management Data Master
