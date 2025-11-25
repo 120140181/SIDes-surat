@@ -346,9 +346,14 @@
                     <i class="fas fa-user-circle"></i>
                     Detail Data Warga
                 </h3>
-                <a href="{{ route('admin.data.warga') }}" class="btn btn-back-modern">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
+                <div class="d-flex gap-2">
+                    <button onclick="confirmDelete()" class="btn btn-danger" style="border-radius: 10px; padding: 10px 18px; font-weight: 600;">
+                        <i class="fas fa-trash"></i> Hapus Warga
+                    </button>
+                    <a href="{{ route('admin.data.warga') }}" class="btn btn-back-modern">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -589,4 +594,46 @@
         </div>
     </div>
 </div>
+
+<!-- Form untuk delete (hidden) -->
+<form id="formDeleteWarga" action="{{ route('admin.data.warga-destroy', $warga->id) }}" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
 @endsection
+
+@push('scripts')
+<script>
+function confirmDelete() {
+    const jumlahPengajuan = {{ $warga->pengajuanSurat()->count() }};
+
+    if (jumlahPengajuan > 0) {
+        Swal.fire({
+            title: 'Tidak Dapat Menghapus!',
+            html: '<div class="text-left"><p>Warga <strong>{{ $warga->nama_lengkap }}</strong> masih memiliki <strong>' + jumlahPengajuan + ' pengajuan surat</strong>.</p><p class="text-danger">Hapus semua pengajuan terlebih dahulu sebelum menghapus data warga.</p></div>',
+            icon: 'error',
+            confirmButtonColor: '#667eea',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Hapus Data Warga?',
+        html: '<div class="text-left"><p>Apakah Anda yakin ingin menghapus data warga:</p><p><strong>Nama:</strong> {{ $warga->nama_lengkap }}</p><p><strong>NIK:</strong> {{ $warga->nik }}</p><p class="text-danger mt-3"><strong>Peringatan:</strong> Data warga akan dihapus secara permanen!</p></div>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times"></i> Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('formDeleteWarga').submit();
+        }
+    });
+}
+</script>
+@endpush

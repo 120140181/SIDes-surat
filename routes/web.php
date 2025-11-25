@@ -94,6 +94,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             // Data Warga
             Route::get('/warga', [DataWargaController::class, 'index'])->name('warga');
             Route::get('/warga/{id}', [DataWargaController::class, 'show'])->name('warga-show');
+            Route::delete('/warga/{id}/destroy', [DataWargaController::class, 'destroy'])->name('warga-destroy');
 
             // Jenis Surat
             Route::get('/jenis-surat', [JenisSuratController::class, 'index'])->name('jenis-surat');

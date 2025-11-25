@@ -464,8 +464,8 @@
                     Detail Pengajuan Surat
                 </h3>
                 <div class="d-flex gap-2">
-                    <button onclick="confirmDelete()" class="btn btn-danger" style="border-radius: 10px; padding: 10px 18px; font-weight: 600;">
-                        <i class="fas fa-trash"></i> Hapus Pengajuan
+                    <button onclick="confirmDelete()" class="btn btn-danger" style="border-radius: 10px; padding: 10px 18px; font-weight: 600; margin-right: 10px;">
+                        <i class="fas fa-trash"></i> Hapus
                     </button>
                     <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-back-modern">
                         <i class="fas fa-arrow-left"></i> Kembali
